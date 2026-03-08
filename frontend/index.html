@@ -1667,6 +1667,29 @@
         <div class="textarea-wrap">
             <textarea id="narrative" placeholder="Paste your campaign, ad copy, or transcript here..."></textarea>
         </div>
+
+        <!-- Audience Selection -->
+        <div style="max-width: 680px; margin: 0 auto 1rem auto; text-align: left; position: relative;">
+            <label for="audience-select"
+                style="display: block; font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; letter-spacing: 1px;">TARGET
+                AUDIENCE:</label>
+            <div style="position: relative;">
+                <select id="audience-select"
+                    style="appearance: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px 16px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; cursor: pointer; backdrop-filter: blur(10px); outline: none; transition: border-color 0.2s;">
+                    <option value="general" style="background: #111; color: #fff;">General Population (Mixed Traits)
+                    </option>
+                    <option value="echo" style="background: #111; color: #fff;">Echo Chamber (Highly Polarized)</option>
+                    <option value="skeptics" style="background: #111; color: #fff;">Skeptics (Low Initial Trust)
+                    </option>
+                    <option value="susceptible" style="background: #111; color: #fff;">Susceptible (High Emotional
+                        Reactivity)</option>
+                </select>
+                <div
+                    style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: rgba(255,255,255,0.5);">
+                    ▼</div>
+            </div>
+        </div>
+
         <!-- File Upload -->
         <div class="upload-zone" id="upload-zone" style="max-width:680px;">
             <input type="file" id="file-input" accept=".txt,.pdf,.doc,.docx,.csv,.mp4,.mp3" />
@@ -1779,6 +1802,11 @@
                     </div>
                 </div>
                 <div class="dash-cols">
+                    <div class="dash-panel" style="flex:1;">
+                        <div class="panel-title">BELIEF SHIFT OVER TIME</div>
+                        <canvas id="chart-belief" width="600" height="200"
+                            style="width:100%; height:auto; display:block; margin-top:10px;"></canvas>
+                    </div>
                     <div class="dash-panel" style="flex:1;">
                         <div class="panel-title">AI ANALYSIS</div>
                         <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
@@ -2389,12 +2417,72 @@
                 document.getElementById('rxn-comment').style.width = '6%';
                 document.getElementById('rxn-none').style.width = '30%';
             }, 400);
+            drawBeliefChart();
             renderNetworkGraph();
             countUp('cnt-impressions', 12402, '');
             countUp('cnt-likes', 3847, '');
             countUp('cnt-dislikes', 1923, '');
             countUp('cnt-shares', 2109, '');
             countUp('cnt-comments', 742, '');
+        }
+
+        // = = = CHARTS = = =
+        function drawBeliefChart() {
+            const c = document.getElementById('chart-belief');
+            if (!c) return;
+            const ctx = c.getContext('2d');
+            c.width = c.offsetWidth * window.devicePixelRatio || 600;
+            c.height = 200;
+            const W = c.width, H = c.height;
+            ctx.clearRect(0, 0, W, H);
+
+            const labels = ['T=0s', 'T=5s', 'T=10s', 'Correction', 'T=60s'];
+            const neutral = [60, 55, 45, 50, 45];
+            const skeptic = [25, 28, 30, 28, 32];
+            const polar = [15, 17, 25, 22, 23];
+
+            // Refined colors matching the sci-fi premium vibe
+            const cols = ['rgba(255,255,255,0.1)', '#3b82f6', '#8b5cf6'];
+            const datasets = [neutral, skeptic, polar];
+            const n = labels.length;
+            const bw = (W / n) * 0.50, gap = W / n;
+
+            for (let xi = 0; xi < n; xi++) {
+                let y0 = H - 25; // Leave room for labels
+                datasets.forEach((d, di) => {
+                    const bh = (d[xi] / 100) * (H - 30);
+                    const x = xi * gap + (gap - bw) / 2;
+
+                    ctx.fillStyle = cols[di];
+                    // Using roundRect for a more polished look if supported
+                    if (ctx.roundRect) {
+                        ctx.beginPath();
+                        ctx.roundRect(x, y0 - bh, bw, bh - 1, (di === 2) ? [4, 4, 0, 0] : [0]);
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(x, y0 - bh, bw, bh - 1);
+                    }
+                    y0 -= bh;
+                });
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.font = `${Math.max(10, W * 0.016)}px 'Inter', system-ui, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[xi], xi * gap + gap / 2, H - 5);
+            }
+
+            // Legend
+            [['Neutral', 'rgba(255,255,255,0.2)'], ['Skeptical', '#3b82f6'], ['Polarized', '#8b5cf6']].forEach(([l, c2], i) => {
+                ctx.fillStyle = c2;
+                if (ctx.roundRect) {
+                    ctx.beginPath(); ctx.roundRect(4 + i * 85, 4, 12, 12, 3); ctx.fill();
+                } else {
+                    ctx.fillRect(4 + i * 85, 4, 12, 12);
+                }
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.font = `${Math.max(10, W * 0.014)}px 'Inter', system-ui, sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.fillText(l, 22 + i * 85, 14);
+            });
         }
 
         // = = = NETWORK GRAPH (3D Solar System) = = =

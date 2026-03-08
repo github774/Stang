@@ -1681,6 +1681,7 @@
                 AUDIENCE:</label>
             <div style="position: relative;">
                 <select id="audience-select"
+                    onchange="document.getElementById('audience-custom').style.display = this.value === 'other' ? 'block' : 'none'; if(this.value === 'other') document.getElementById('audience-custom').focus();"
                     style="appearance: none; width: 100%; background: rgba(255, 255, 255, 0.7); border: 1.5px solid rgba(0, 0, 0, 0.14); color: var(--ink); padding: 14px 18px; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1.05rem; cursor: pointer; backdrop-filter: blur(12px); outline: none; transition: box-shadow 0.3s, border-color 0.3s; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);">
                     <option value="general" style="background: #fff; color: #000;">General Population (Mixed Traits)
                     </option>
@@ -1697,11 +1698,14 @@
                         Value-Driven)</option>
                     <option value="boomers" style="background: #fff; color: #000;">Older Demographic (Traditional
                         Authority Trust)</option>
+                    <option value="other" style="background: #fff; color: #000;">Custom Audience (Other)</option>
                 </select>
                 <div
                     style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-mid); cursor: pointer;">
                     ▼</div>
             </div>
+            <input type="text" id="audience-custom" placeholder="Describe your custom audience..."
+                style="display: none; width: 100%; margin-top: 0.8rem; background: rgba(255, 255, 255, 0.7); border: 1.5px solid rgba(0, 0, 0, 0.14); color: var(--ink); padding: 14px 18px; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);">
         </div>
 
         <!-- File Upload -->
@@ -2464,8 +2468,14 @@
         }
 
         // = = = CHARTS (Chart.js) = = =
+        let chartLine = null, chartBar = null, chartPie = null;
         function drawBeliefChart() {
             if (!document.getElementById('chart-line')) return;
+
+            if (chartLine) chartLine.destroy();
+            if (chartBar) chartBar.destroy();
+            if (chartPie) chartPie.destroy();
+
             // Shared data
             const labels = ['T=0s', 'T=5s', 'T=10s', 'Correction', 'T=60s'];
             const neutral = [60, 55, 45, 50, 45];
@@ -2477,7 +2487,7 @@
             const cNeutral = '#9ca3af', cSkeptic = '#3b82f6', cPolar = '#8b5cf6';
 
             // 1. Line Chart (Trends over time)
-            new Chart(document.getElementById('chart-line'), {
+            chartLine = new Chart(document.getElementById('chart-line'), {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -2496,7 +2506,7 @@
             });
 
             // 2. Bar Chart (Comparison at T=60s)
-            new Chart(document.getElementById('chart-bar'), {
+            chartBar = new Chart(document.getElementById('chart-bar'), {
                 type: 'bar',
                 data: {
                     labels: ['Neutral', 'Skeptical', 'Polarized'],
@@ -2516,7 +2526,7 @@
             });
 
             // 3. Pie Chart (Part-to-whole proportions at T=60s)
-            new Chart(document.getElementById('chart-pie'), {
+            chartPie = new Chart(document.getElementById('chart-pie'), {
                 type: 'pie',
                 data: {
                     labels: ['Neutral', 'Skeptical', 'Polarized'],

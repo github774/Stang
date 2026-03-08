@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <!-- Force Graph for ACT 3 -->
     <script src="https://unpkg.com/force-graph"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -1453,16 +1455,16 @@
 
         .tree li div.tree-box {
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.9);
+            color: #000;
             font-family: 'Inter', system-ui, sans-serif;
             font-size: 0.8rem;
             display: inline-block;
             border-radius: 10px;
             transition: all 0.3s;
-            background: rgba(15, 20, 30, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #E7EAE5;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 12px 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             min-width: 140px;
             backdrop-filter: blur(12px);
         }
@@ -1492,7 +1494,7 @@
             display: block;
             margin-top: 6px;
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(0, 0, 0, 0.65);
         }
 
         #network-tree-panel {
@@ -1815,9 +1817,32 @@
                 </div>
                 <div class="dash-cols">
                     <div class="dash-panel" style="flex:1;">
-                        <div class="panel-title">BELIEF SHIFT OVER TIME</div>
-                        <canvas id="chart-belief" width="600" height="200"
-                            style="width:100%; height:auto; display:block; margin-top:10px;"></canvas>
+                        <div class="panel-title" style="margin-bottom: 0.5rem;">SIMULATION METRICS</div>
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top:10px;">
+                            <div>
+                                <div
+                                    style="font-size: 0.75rem; color: var(--ink-mid); margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px;">
+                                    TREND OVER TIME (LINE)</div>
+                                <canvas id="chart-line" width="600" height="180"
+                                    style="width:100%; height:auto; display:block;"></canvas>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <div
+                                        style="font-size: 0.75rem; color: var(--ink-mid); margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px;">
+                                        BELIEF COMPARISON (BAR)</div>
+                                    <canvas id="chart-bar" width="300" height="220"
+                                        style="width:100%; height:auto; display:block;"></canvas>
+                                </div>
+                                <div>
+                                    <div
+                                        style="font-size: 0.75rem; color: var(--ink-mid); margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px;">
+                                        FINAL PROPORTIONS (PIE)</div>
+                                    <canvas id="chart-pie" width="300" height="220"
+                                        style="width:100%; height:auto; display:block;"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="dash-panel" style="flex:1;">
                         <div class="panel-title">AI ANALYSIS</div>
@@ -2438,62 +2463,75 @@
             countUp('cnt-comments', 742, '');
         }
 
-        // = = = CHARTS = = =
+        // = = = CHARTS (Chart.js) = = =
         function drawBeliefChart() {
-            const c = document.getElementById('chart-belief');
-            if (!c) return;
-            const ctx = c.getContext('2d');
-            c.width = c.offsetWidth * window.devicePixelRatio || 600;
-            c.height = 200;
-            const W = c.width, H = c.height;
-            ctx.clearRect(0, 0, W, H);
-
+            if (!document.getElementById('chart-line')) return;
+            // Shared data
             const labels = ['T=0s', 'T=5s', 'T=10s', 'Correction', 'T=60s'];
             const neutral = [60, 55, 45, 50, 45];
             const skeptic = [25, 28, 30, 28, 32];
             const polar = [15, 17, 25, 22, 23];
 
-            // Refined colors matching the sci-fi premium vibe (light mode adapted)
-            const cols = ['rgba(0,0,0,0.06)', '#3b82f6', '#8b5cf6'];
-            const datasets = [neutral, skeptic, polar];
-            const n = labels.length;
-            const bw = (W / n) * 0.50, gap = W / n;
+            Chart.defaults.color = '#666';
+            Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+            const cNeutral = '#9ca3af', cSkeptic = '#3b82f6', cPolar = '#8b5cf6';
 
-            for (let xi = 0; xi < n; xi++) {
-                let y0 = H - 25; // Leave room for labels
-                datasets.forEach((d, di) => {
-                    const bh = (d[xi] / 100) * (H - 30);
-                    const x = xi * gap + (gap - bw) / 2;
-
-                    ctx.fillStyle = cols[di];
-                    // Using roundRect for a more polished look if supported
-                    if (ctx.roundRect) {
-                        ctx.beginPath();
-                        ctx.roundRect(x, y0 - bh, bw, bh - 1, (di === 2) ? [4, 4, 0, 0] : [0]);
-                        ctx.fill();
-                    } else {
-                        ctx.fillRect(x, y0 - bh, bw, bh - 1);
-                    }
-                    y0 -= bh;
-                });
-                ctx.fillStyle = 'rgba(0,0,0,0.5)';
-                ctx.font = `${Math.max(10, W * 0.016)}px 'Inter', system-ui, sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.fillText(labels[xi], xi * gap + gap / 2, H - 5);
-            }
-
-            // Legend
-            [['Neutral', 'rgba(0,0,0,0.1)'], ['Skeptical', '#3b82f6'], ['Polarized', '#8b5cf6']].forEach(([l, c2], i) => {
-                ctx.fillStyle = c2;
-                if (ctx.roundRect) {
-                    ctx.beginPath(); ctx.roundRect(4 + i * 85, 4, 12, 12, 3); ctx.fill();
-                } else {
-                    ctx.fillRect(4 + i * 85, 4, 12, 12);
+            // 1. Line Chart (Trends over time)
+            new Chart(document.getElementById('chart-line'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Neutral', data: neutral, borderColor: cNeutral, backgroundColor: 'rgba(156,163,175,0.1)', tension: 0.4, fill: true, pointRadius: 4 },
+                        { label: 'Skeptical', data: skeptic, borderColor: cSkeptic, backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.4, fill: true, pointRadius: 4 },
+                        { label: 'Polarized', data: polar, borderColor: cPolar, backgroundColor: 'rgba(139,92,246,0.1)', tension: 0.4, fill: true, pointRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, font: { size: 11 } } } },
+                    scales: { y: { beginAtZero: true, max: 100 } },
+                    animation: { duration: 1500, easing: 'easeOutQuart' }
                 }
-                ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                ctx.font = `${Math.max(10, W * 0.014)}px 'Inter', system-ui, sans-serif`;
-                ctx.textAlign = 'left';
-                ctx.fillText(l, 22 + i * 85, 14);
+            });
+
+            // 2. Bar Chart (Comparison at T=60s)
+            new Chart(document.getElementById('chart-bar'), {
+                type: 'bar',
+                data: {
+                    labels: ['Neutral', 'Skeptical', 'Polarized'],
+                    datasets: [{
+                        label: 'Final Belief Distribution',
+                        data: [neutral[4], skeptic[4], polar[4]],
+                        backgroundColor: [cNeutral, cSkeptic, cPolar],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } },
+                    animation: { duration: 1500, easing: 'easeOutQuart', delay: 500 }
+                }
+            });
+
+            // 3. Pie Chart (Part-to-whole proportions at T=60s)
+            new Chart(document.getElementById('chart-pie'), {
+                type: 'pie',
+                data: {
+                    labels: ['Neutral', 'Skeptical', 'Polarized'],
+                    datasets: [{
+                        data: [neutral[4], skeptic[4], polar[4]],
+                        backgroundColor: [cNeutral, cSkeptic, cPolar],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 11 } } } },
+                    animation: { duration: 1500, easing: 'easeOutQuart', delay: 800 }
+                }
             });
         }
 

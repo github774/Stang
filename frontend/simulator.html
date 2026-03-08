@@ -293,10 +293,14 @@
         }
 
         .btn-simulate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
             font-family: 'Inter', system-ui, sans-serif;
             font-weight: 600;
             font-size: 1rem;
-            padding: .9rem 2.5rem;
+            padding: 1.1rem 2.5rem;
             border: none;
             border-radius: 12px;
             cursor: pointer;
@@ -1487,8 +1491,8 @@
         .tree-reaction {
             display: block;
             margin-top: 6px;
-            font-size: 0.7rem;
-            color: var(--ink-mid);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.65);
         }
 
         #network-tree-panel {
@@ -1649,12 +1653,12 @@
         <!-- Home Navigation -->
         <nav
             style="position: absolute; top: 40px; right: 50px; display: flex; gap: 40px; font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; z-index: 100;">
-            <a href="#" style="color: #fff; text-decoration: none; font-weight: 500;">Home</a>
-            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
-                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+            <a href="#" style="color: var(--ink); text-decoration: none; font-weight: 600;">Home</a>
+            <a href="#" style="color: var(--ink-mid); text-decoration: none; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-mid)'"
                 onclick="document.getElementById('simulate-btn').click(); return false;">Swarm Console</a>
-            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
-                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+            <a href="#" style="color: var(--ink-mid); text-decoration: none; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-mid)'"
                 onclick="startSim(); setTimeout(showAct3, 1000); return false;">Results</a>
             <a href="#" id="nav-auth-home" style="color: var(--purple); font-weight: 600; text-decoration: none;">Sign
                 In / Sign Up</a>
@@ -1669,23 +1673,31 @@
         </div>
 
         <!-- Audience Selection -->
-        <div style="max-width: 680px; margin: 0 auto 1rem auto; text-align: left; position: relative;">
+        <div style="max-width: 680px; margin: 0 auto 1.4rem auto; text-align: left; position: relative; z-index: 10;">
             <label for="audience-select"
-                style="display: block; font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; letter-spacing: 1px;">TARGET
+                style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--ink-mid); margin-bottom: 0.6rem; letter-spacing: 1px;">TARGET
                 AUDIENCE:</label>
             <div style="position: relative;">
                 <select id="audience-select"
-                    style="appearance: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px 16px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; cursor: pointer; backdrop-filter: blur(10px); outline: none; transition: border-color 0.2s;">
-                    <option value="general" style="background: #111; color: #fff;">General Population (Mixed Traits)
+                    style="appearance: none; width: 100%; background: rgba(255, 255, 255, 0.7); border: 1.5px solid rgba(0, 0, 0, 0.14); color: var(--ink); padding: 14px 18px; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1.05rem; cursor: pointer; backdrop-filter: blur(12px); outline: none; transition: box-shadow 0.3s, border-color 0.3s; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);">
+                    <option value="general" style="background: #fff; color: #000;">General Population (Mixed Traits)
                     </option>
-                    <option value="echo" style="background: #111; color: #fff;">Echo Chamber (Highly Polarized)</option>
-                    <option value="skeptics" style="background: #111; color: #fff;">Skeptics (Low Initial Trust)
+                    <option value="echo" style="background: #fff; color: #000;">Echo Chamber (Highly Polarized)</option>
+                    <option value="skeptics" style="background: #fff; color: #000;">Skeptics (Low Initial Trust)
                     </option>
-                    <option value="susceptible" style="background: #111; color: #fff;">Susceptible (High Emotional
+                    <option value="susceptible" style="background: #fff; color: #000;">Susceptible (High Emotional
                         Reactivity)</option>
+                    <option value="youth" style="background: #fff; color: #000;">Gen Z Demographic (High Social
+                        Fluidity)</option>
+                    <option value="professionals" style="background: #fff; color: #000;">Corporate Network (Status Quo
+                        Biased)</option>
+                    <option value="activists" style="background: #fff; color: #000;">Activists (High Engagement,
+                        Value-Driven)</option>
+                    <option value="boomers" style="background: #fff; color: #000;">Older Demographic (Traditional
+                        Authority Trust)</option>
                 </select>
                 <div
-                    style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: rgba(255,255,255,0.5);">
+                    style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-mid); cursor: pointer;">
                     ▼</div>
             </div>
         </div>
@@ -2441,8 +2453,8 @@
             const skeptic = [25, 28, 30, 28, 32];
             const polar = [15, 17, 25, 22, 23];
 
-            // Refined colors matching the sci-fi premium vibe
-            const cols = ['rgba(255,255,255,0.1)', '#3b82f6', '#8b5cf6'];
+            // Refined colors matching the sci-fi premium vibe (light mode adapted)
+            const cols = ['rgba(0,0,0,0.06)', '#3b82f6', '#8b5cf6'];
             const datasets = [neutral, skeptic, polar];
             const n = labels.length;
             const bw = (W / n) * 0.50, gap = W / n;
@@ -2464,21 +2476,21 @@
                     }
                     y0 -= bh;
                 });
-                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
                 ctx.font = `${Math.max(10, W * 0.016)}px 'Inter', system-ui, sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.fillText(labels[xi], xi * gap + gap / 2, H - 5);
             }
 
             // Legend
-            [['Neutral', 'rgba(255,255,255,0.2)'], ['Skeptical', '#3b82f6'], ['Polarized', '#8b5cf6']].forEach(([l, c2], i) => {
+            [['Neutral', 'rgba(0,0,0,0.1)'], ['Skeptical', '#3b82f6'], ['Polarized', '#8b5cf6']].forEach(([l, c2], i) => {
                 ctx.fillStyle = c2;
                 if (ctx.roundRect) {
                     ctx.beginPath(); ctx.roundRect(4 + i * 85, 4, 12, 12, 3); ctx.fill();
                 } else {
                     ctx.fillRect(4 + i * 85, 4, 12, 12);
                 }
-                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
                 ctx.font = `${Math.max(10, W * 0.014)}px 'Inter', system-ui, sans-serif`;
                 ctx.textAlign = 'left';
                 ctx.fillText(l, 22 + i * 85, 14);

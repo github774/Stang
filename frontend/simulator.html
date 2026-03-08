@@ -1401,7 +1401,7 @@
             position: absolute;
             top: 0;
             right: 50%;
-            border-top: 2px solid rgba(0, 0, 0, 0.15);
+            border-top: 2px solid rgba(255, 255, 255, 0.25);
             width: 50%;
             height: 20px;
             z-index: 1;
@@ -1410,7 +1410,7 @@
         .tree li::after {
             right: auto;
             left: 50%;
-            border-left: 2px solid rgba(0, 0, 0, 0.15);
+            border-left: 2px solid rgba(255, 255, 255, 0.25);
         }
 
         .tree li:only-child::after,
@@ -1428,7 +1428,7 @@
         }
 
         .tree li:last-child::before {
-            border-right: 2px solid rgba(0, 0, 0, 0.15);
+            border-right: 2px solid rgba(255, 255, 255, 0.25);
             border-radius: 0 5px 0 0;
         }
 
@@ -1441,7 +1441,7 @@
             position: absolute;
             top: 0;
             left: 50%;
-            border-left: 2px solid rgba(0, 0, 0, 0.15);
+            border-left: 2px solid rgba(255, 255, 255, 0.25);
             width: 0;
             height: 20px;
             z-index: 1;
@@ -1449,37 +1449,39 @@
 
         .tree li div.tree-box {
             text-decoration: none;
-            color: var(--ink);
+            color: rgba(255, 255, 255, 0.9);
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             display: inline-block;
             border-radius: 10px;
             transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 10px 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            min-width: 130px;
-            backdrop-filter: blur(8px);
+            background: rgba(15, 20, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            min-width: 140px;
+            backdrop-filter: blur(12px);
         }
 
         .tree li div.tree-box.liked {
-            border-top: 4px solid #16a34a;
+            border-top: 3px solid #16a34a;
+            box-shadow: 0 -2px 15px rgba(22, 163, 74, 0.2), 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .tree li div.tree-box.disliked {
-            border-top: 4px solid #c0392b;
+            border-top: 3px solid #c0392b;
+            box-shadow: 0 -2px 15px rgba(192, 57, 43, 0.2), 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .tree li div.tree-box.neutral {
-            border-top: 4px solid #eab308;
+            border-top: 3px solid #eab308;
+            box-shadow: 0 -2px 15px rgba(234, 179, 8, 0.2), 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .tree li div.tree-box.root {
-            box-shadow: 0 4px 20px rgba(107, 63, 160, 0.2);
-            border-color: rgba(107, 63, 160, 0.4);
-            border-width: 2px;
-            background: rgba(255, 255, 255, 0.9);
+            border-top: 3px solid #a855f7;
+            box-shadow: 0 -2px 20px rgba(168, 85, 247, 0.3), 0 8px 25px rgba(0, 0, 0, 0.5);
+            transform: scale(1.05);
         }
 
         .tree-reaction {
@@ -1777,11 +1779,7 @@
                     </div>
                 </div>
                 <div class="dash-cols">
-                    <div class="dash-panel">
-                        <div class="panel-title">BELIEF SHIFT OVER TIME</div>
-                        <canvas id="chart-belief" width="600" height="200"></canvas>
-                    </div>
-                    <div class="dash-panel">
+                    <div class="dash-panel" style="flex:1;">
                         <div class="panel-title">AI ANALYSIS</div>
                         <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
                                 bubbles</strong> when they already feel defensive or strongly tribal.</p>
@@ -2391,51 +2389,12 @@
                 document.getElementById('rxn-comment').style.width = '6%';
                 document.getElementById('rxn-none').style.width = '30%';
             }, 400);
-            drawBeliefChart();
             renderNetworkGraph();
             countUp('cnt-impressions', 12402, '');
             countUp('cnt-likes', 3847, '');
             countUp('cnt-dislikes', 1923, '');
             countUp('cnt-shares', 2109, '');
             countUp('cnt-comments', 742, '');
-        }
-
-        // = = = CHARTS = = =
-        function drawBeliefChart() {
-            const c = document.getElementById('chart-belief');
-            const ctx = c.getContext('2d');
-            c.width = c.offsetWidth * window.devicePixelRatio || 600;
-            c.height = 200;
-            const W = c.width, H = c.height;
-            ctx.clearRect(0, 0, W, H);
-            const labels = ['T=0s', 'T=5s', 'T=10s', 'Correction', 'T=60s'];
-            const neutral = [60, 55, 45, 50, 45];
-            const skeptic = [25, 28, 30, 28, 32];
-            const polar = [15, 17, 25, 22, 23];
-            const cols = ['rgba(0,0,0,.1)', '#2563eb', '#1a1a1a'];
-            const datasets = [neutral, skeptic, polar];
-            const n = labels.length;
-            const bw = (W / n) * 0.55, gap = W / n;
-            for (let xi = 0; xi < n; xi++) {
-                let y0 = H;
-                datasets.forEach((d, di) => {
-                    const bh = (d[xi] / 100) * H * 0.88;
-                    const x = xi * gap + (gap - bw) / 2;
-                    ctx.fillStyle = cols[di];
-                    ctx.fillRect(x, y0 - bh, bw, bh);
-                    y0 -= bh;
-                });
-                ctx.fillStyle = 'rgba(0,0,0,.45)';
-                ctx.font = `${Math.max(9, W * 0.018)}px 'Inter', system-ui, sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.fillText(labels[xi], xi * gap + gap / 2, H - 2);
-            }
-            // Legend
-            [['Neutral', 'rgba(0,0,0,.15)'], ['Skeptical', '#2563eb'], ['Polarized', '#1a1a1a']].forEach(([l, c2], i) => {
-                ctx.fillStyle = c2; ctx.fillRect(4 + i * 74, 4, 11, 11);
-                ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.font = `${Math.max(8, W * 0.016)}px 'Inter', system-ui, sans-serif`;
-                ctx.textAlign = 'left'; ctx.fillText(l, 18 + i * 74, 13);
-            });
         }
 
         // = = = NETWORK GRAPH (3D Solar System) = = =

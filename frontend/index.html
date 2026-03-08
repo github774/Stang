@@ -1253,17 +1253,412 @@
             color: var(--purple);
             transform: translateY(-2px);
         }
+
+        /* ── AUTH MODAL ── */
+        #auth-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #auth-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .auth-modal {
+            background: rgba(22, 22, 26, 0.95);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .auth-close:hover {
+            color: #fff;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-tab {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            padding-bottom: 0.6rem;
+            cursor: pointer;
+            position: relative;
+            top: 2px;
+            transition: color 0.2s;
+        }
+
+        .auth-tab.active {
+            color: #fff;
+            border-bottom: 2px solid var(--purple);
+            font-weight: 600;
+        }
+
+        .auth-form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        .auth-form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .auth-form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .auth-form-group input:focus {
+            border-color: var(--purple);
+            outline: none;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .auth-btn:hover {
+            background: #8559cc;
+            transform: translateY(-1px);
+        }
+
+        /* ── FAMILY TREE (CSS-ONLY) ── */
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: all 0.5s;
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            transition: all 0.5s;
+        }
+
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 2px solid rgba(0, 0, 0, 0.15);
+            width: 50%;
+            height: 20px;
+            z-index: 1;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 2px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 2px solid rgba(0, 0, 0, 0.15);
+            border-radius: 0 5px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid rgba(0, 0, 0, 0.15);
+            width: 0;
+            height: 20px;
+            z-index: 1;
+        }
+
+        .tree li div.tree-box {
+            text-decoration: none;
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.75rem;
+            display: inline-block;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 10px 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            min-width: 130px;
+            backdrop-filter: blur(8px);
+        }
+
+        .tree li div.tree-box.liked {
+            border-top: 4px solid #16a34a;
+        }
+
+        .tree li div.tree-box.disliked {
+            border-top: 4px solid #c0392b;
+        }
+
+        .tree li div.tree-box.neutral {
+            border-top: 4px solid #eab308;
+        }
+
+        .tree li div.tree-box.root {
+            box-shadow: 0 4px 20px rgba(107, 63, 160, 0.2);
+            border-color: rgba(107, 63, 160, 0.4);
+            border-width: 2px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .tree-reaction {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: var(--ink-mid);
+        }
+
+        #network-tree-panel {
+            overflow: hidden;
+            padding-bottom: 2rem;
+            cursor: grab;
+            position: relative;
+        }
+
+        #network-tree-panel:active {
+            cursor: grabbing;
+        }
+
+        /* ── 3D MEDIA INJECTION ANIMATION (ULTRA REALISTIC GLASS) ── */
+        #injection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 14, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        #injection-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .cube-stack {
+            perspective: 1500px;
+            transform-style: preserve-3d;
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform: rotateX(60deg) rotateZ(-45deg);
+        }
+
+        .layer-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.8),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px) saturate(120%);
+            -webkit-backdrop-filter: blur(8px) saturate(120%);
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+        }
+
+        .layer-block.base-1 {
+            transform: translateZ(0px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .layer-block.base-2 {
+            transform: translateZ(40px);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .layer-block.base-3 {
+            transform: translateZ(80px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .layer-block.payload {
+            transform: translateZ(800px);
+            opacity: 0;
+            border: 1px solid rgba(200, 230, 255, 0.8);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(200, 220, 255, 0.05) 100%);
+            box-shadow:
+                0 40px 80px rgba(0, 30, 100, 0.4),
+                inset 0 1px 30px rgba(255, 255, 255, 0.9),
+                inset 0 -1px 20px rgba(100, 150, 255, 0.3);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+        }
+
+        .layer-block.payload.drop {
+            transform: translateZ(120px);
+            opacity: 1;
+        }
+
+        .layer-grid {
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .overlay-text.pulse {
+            animation: textFlash 2s infinite alternate;
+            opacity: 1;
+        }
+
+        @keyframes textFlash {
+            from {
+                opacity: 0.6;
+            }
+
+            to {
+                opacity: 1;
+                text-shadow: 0 2px 20px rgba(255, 255, 255, 0.5);
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- 3D INJECTION OVERLAY -->
+    <div id="injection-overlay">
+        <div class="cube-stack">
+            <div class="layer-block base-1"></div>
+            <div class="layer-block base-2"></div>
+            <div class="layer-block base-3"></div>
+            <div class="layer-block payload" id="new-media-layer"></div>
+        </div>
+        <div class="overlay-text" id="overlay-status">ASSIMILATING PAYLOAD</div>
+    </div>
 
     <!-- Background Starfield -->
     <canvas id="starfield"></canvas>
 
     <!-- ═══ ACT 1 ═══ -->
     <section id="act1">
-        <div class="logo-mark"><span class="p">PRISM</span><span class="x">×</span><span class="s">SWARM</span></div>
+        <!-- Home Navigation -->
+        <nav
+            style="position: absolute; top: 40px; right: 50px; display: flex; gap: 40px; font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; z-index: 100;">
+            <a href="#" style="color: #fff; text-decoration: none; font-weight: 500;">Home</a>
+            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+                onclick="document.getElementById('simulate-btn').click(); return false;">Swarm Console</a>
+            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+                onclick="startSim(); setTimeout(showAct3, 1000); return false;">Results</a>
+            <a href="#" id="nav-auth-home" style="color: var(--purple); font-weight: 600; text-decoration: none;">Sign
+                In / Sign Up</a>
+        </nav>
+
+        <div class="logo-mark"><span class="s">SWARM</span></div>
         <h1 class="act1-headline">Drop a narrative<br />into the network.</h1>
         <p class="act1-sub">Paste an ad campaign, political speech, or video transcript. Watch it propagate through
             10,000 simulated minds.</p>
@@ -1291,11 +1686,11 @@
         <div class="globe-label lbl-red" id="lbl3" style="top:60%;left:25%">Low Trust Zone</div>
         <div class="globe-label lbl-cyan" id="lbl4" style="top:55%;right:22%">Bridge Node</div>
         <div class="globe-ui">
-            <div class="globe-logo">PRISM × SWARM</div>
+            <div class="globe-logo">SWARM</div>
             <div class="globe-status" id="globe-status"></div>
         </div>
         <div id="scroll-blocks">
-            <div class="scroll-block" id="sb1">Prism is profiling 10,000 agents across 6 trait dimensions...</div>
+            <div class="scroll-block" id="sb1">Swarm is profiling 10,000 agents across 6 trait dimensions...</div>
             <div class="scroll-block" id="sb2">Swarm is modeling cascade propagation across clusters...</div>
             <div class="scroll-block lit" id="sb3">Polarization index rising. 34% network exposure reached...</div>
         </div>
@@ -1309,12 +1704,12 @@
     <section id="act3">
         <!-- Nav -->
         <nav class="dash-nav">
-            <div class="dash-nav-brand"><span class="p">PRISM</span> <span style="opacity:.3">×</span> <span
-                    class="s">SWARM</span></div>
+            <div class="dash-nav-brand"><span class="s">SWARM</span></div>
             <div class="dash-nav-links">
                 <a href="#" id="nav-home">Home</a>
                 <a href="#" class="active">Swarm Console</a>
                 <a href="#" class="active">Results</a>
+                <a href="#" id="nav-auth" style="font-weight:600; color:var(--purple);">Sign In / Sign Up</a>
             </div>
             <div class="dash-tab-group">
                 <button class="dash-tab on" id="tab-overview">OVERVIEW</button>
@@ -1388,15 +1783,16 @@
                     </div>
                     <div class="dash-panel">
                         <div class="panel-title">AI ANALYSIS</div>
-                        <p class="ai-para">The simulation revealed high susceptibility to <strong>echo chamber
-                                formation</strong> under elevated baseline tribalism (avg 65%).</p>
-                        <p class="ai-para">The polarizing event at T=15s triggered rapid belief updates in agents with
-                            <em>InstitutionalTrust &lt; 40</em>, reinforcing priors rather than updating toward neutral.
-                        </p>
-                        <p class="ai-para">The community correction was effective in open-minded clusters, but produced
-                            a <strong>backfire effect</strong> in hardened enclaves.</p>
-                        <div class="key-finding"><strong>KEY FINDING</strong><br>Bridging nodes (low conformity + high
-                            openness) suppress cascade propagation by 40% when positioned at cluster boundaries.</div>
+                        <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
+                                bubbles</strong> when they already feel defensive or strongly tribal.</p>
+                        <p class="ai-para">When the controversial event hit, users who already distrusted mainstream
+                            sources quickly rushed to share the narrative, ignoring fact-checks completely.</p>
+                        <p class="ai-para">Community notes and corrections worked well for open-minded users, but
+                            actually <strong>made things worse</strong> (causing a backfire effect) in the more extreme
+                            groups.</p>
+                        <div class="key-finding"><strong>KEY FINDING</strong><br>Users who naturally talk to multiple
+                            different groups (bridge builders) can slow down the spread of misinformation by up to 40%.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1460,7 +1856,21 @@
             btn.style.opacity = '0.7';
             btn.style.pointerEvents = 'none';
 
-            // Simulate a brief calculation delay, then regenerate data
+            // Trigger Animation Overlay
+            const overlay = document.getElementById('injection-overlay');
+            const payloadLayer = document.getElementById('new-media-layer');
+            const statusText = document.getElementById('overlay-status');
+
+            overlay.classList.add('active');
+            statusText.classList.add('pulse');
+            statusText.innerText = "ASSIMILATING PAYLOAD";
+
+            // Drop sequence
+            setTimeout(() => {
+                payloadLayer.classList.add('drop');
+            }, 100);
+
+            // Simulate calculation hidden behind overlay
             setTimeout(() => {
                 // Re-randomize stats
                 const rnd = () => 0.8 + Math.random() * 0.5; // randomize 80-130%
@@ -1492,16 +1902,24 @@
                     treePanel.innerHTML = 'Click a node in the 3D network to view its propagation path.';
                 }
 
-                input.value = ''; // clear input
-                btn.innerText = originalText;
-                btn.style.opacity = '1';
-                btn.style.pointerEvents = 'auto';
+                statusText.innerText = "SYSTEM RECALIBRATED";
 
-                // Scroll to overview/network so user sees it regenerate
-                document.getElementById('tab-overview').click();
-                document.querySelector('.dash-title').scrollIntoView({ behavior: 'smooth' });
+                // Clean up state and hide overlay
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    payloadLayer.classList.remove('drop');
+                    statusText.classList.remove('pulse');
+                    input.value = ''; // clear input
+                    btn.innerText = originalText;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
 
-            }, 1200);
+                    // Scroll to overview/network so user sees it regenerate
+                    document.getElementById('tab-overview').click();
+                    document.querySelector('.dash-title').scrollIntoView({ behavior: 'smooth' });
+                }, 1200);
+
+            }, 1600); // Complete animation sequence length
         }
 
         // ════════════════════════════════════════════════════════════
@@ -1941,7 +2359,7 @@
             geo.attributes.color.needsUpdate = true;
 
             // status text
-            const msgs = ['INJECTING NARRATIVE INTO NETWORK...', 'PRISM: PROFILING 10,000 AGENTS...', 'SWARM: PROPAGATING BELIEF WAVES...', 'POLARIZATION INDEX: RISING...'];
+            const msgs = ['INJECTING NARRATIVE INTO NETWORK...', 'SWARM: PROFILING 10,000 AGENTS...', 'SWARM: PROPAGATING BELIEF WAVES...', 'POLARIZATION INDEX: RISING...'];
             status.classList.add('visible');
             let mi = 0;
             status.textContent = msgs[0];
@@ -2078,8 +2496,8 @@
                 'didnt': 0x6b7280      // dim gray
             };
 
-            // Use Icosahedron for that slightly faceted, realistic asteroid/star look
-            const nodeGeo = new THREE.IcosahedronGeometry(1.2, 1);
+            // Use SphereGeometry for smooth, realistic nodes
+            const nodeGeo = new THREE.SphereGeometry(1.2, 32, 32); // Smooth sphere
 
             for (let i = 0; i < nNodes; i++) {
                 const r = Math.random();
@@ -2102,12 +2520,14 @@
                 const size = shared ? 2.5 : 1.2;
 
                 // Ultra realistic material
-                const mat = new THREE.MeshStandardMaterial({
+                const mat = new THREE.MeshPhysicalMaterial({ // Use MeshPhysicalMaterial for more realism
                     color: colorMap[reaction],
                     emissive: colorMap[reaction],
                     emissiveIntensity: 0.3,
                     roughness: 0.2,
-                    metalness: 0.8
+                    metalness: 0.8,
+                    clearcoat: 1.0, // Add clearcoat for a glossy finish
+                    clearcoatRoughness: 0.1
                 });
 
                 const mesh = new THREE.Mesh(nodeGeo, mat);
@@ -2205,65 +2625,58 @@
                         const rMapTree = { 'liked': 'Liked', 'disliked': 'Disliked', 'neutral': 'Neutral', 'didnt': 'Ignored' };
 
                         let treeHTML = `
-                            <div style="padding-left: 5px;">
-                                <div class="tree-node">
-                                    <div class="tree-box root ${d.reaction}">
-                                        <div>User Agent #${d.id} (ROOT)</div>
-                                        <span class="tree-reaction">Action: ${rMapTree[d.reaction]} • Influence: ${d.influence}%</span>
-                                    </div>
-                                    <div style="margin-top: 10px; padding-left: 10px;">
+                            <div class="tree" style="transform-origin: top center; transition: transform 0.1s ease-out;">
+                                <ul>
+                                    <li>
+                                        <div class="tree-box root ${d.reaction}">
+                                            <strong>Agent #${d.id}</strong><br>
+                                            <span class="tree-reaction">Action: ${rMapTree[d.reaction]}<br>Influence: ${d.influence}%</span>
+                                        </div>
                         `;
 
                         if (d.shared) {
-                            // Generate 1-3 random branches to show it spread
-                            const numBranches = Math.floor(Math.random() * 3) + 1;
+                            treeHTML += `<ul>`;
+                            const numBranches = Math.floor(Math.random() * 3) + 2; // 2 to 4 direct children
                             for (let b = 0; b < numBranches; b++) {
                                 const bReax = Math.random() < 0.5 ? 'liked' : (Math.random() < 0.5 ? 'neutral' : 'disliked');
-                                const subNodes = Math.random() < 0.4; // 40% chance of deeper branches
+                                const subNodes = Math.random() < 0.5; // 50% chance of deeper branches
                                 treeHTML += `
-                                    <div class="tree-node">
+                                    <li>
                                         <div class="tree-box ${bReax}">
-                                            <div>Agent #${Math.floor(Math.random() * 2000)}</div>
+                                            <strong>Agent #${Math.floor(Math.random() * 2000)}</strong><br>
                                             <span class="tree-reaction">Action: ${rMapTree[bReax]}</span>
                                         </div>
                                 `;
                                 if (subNodes) {
-                                    treeHTML += `<div style="margin-top: 10px; padding-left: 10px;">
-                                        <div class="tree-node">
+                                    treeHTML += `<ul>
+                                        <li>
                                             <div class="tree-box neutral">
-                                                <div>Agent #${Math.floor(Math.random() * 2000)}</div>
+                                                <strong>Agent #${Math.floor(Math.random() * 2000)}</strong><br>
                                                 <span class="tree-reaction">Action: Neutral</span>
                                             </div>
-                                        </div>
-                                    </div>`;
+                                        </li>
+                                    </ul>`;
                                 }
-                                treeHTML += `</div>`; // .tree-node
+                                treeHTML += `</li>`;
                             }
+                            treeHTML += `</ul>`;
                         } else if (d.reaction !== 'didnt') {
-                            treeHTML += `
-                                <div class="tree-node">
-                                    <div style="font-size: 0.8rem; color: var(--ink-light); display:inline-block; margin-top: 8px;">
-                                        Terminal node (did not pass on)
-                                    </div>
-                                </div>
-                            `;
+                            // Show single terminal note
+                            treeHTML += `<ul><li><div class="tree-box" style="border-top:2px solid #ccc;opacity:0.7"><strong>Terminal Node</strong><br><span class="tree-reaction">Did not pass on</span></div></li></ul>`;
                         } else {
-                            treeHTML += `
-                                <div class="tree-node">
-                                    <div style="font-size: 0.8rem; color: var(--ink-light); display:inline-block; margin-top: 8px;">
-                                        No interaction detected.
-                                    </div>
-                                </div>
-                            `;
+                            treeHTML += `<ul><li><div class="tree-box" style="border-top:2px solid #ccc;opacity:0.7"><strong>Ignored</strong><br><span class="tree-reaction">No interaction detected</span></div></li></ul>`;
                         }
 
                         treeHTML += `
-                                    </div> <!-- close inner padding -->
-                                </div> <!-- close root node -->
-                            </div> <!-- close outer padding -->
+                                    </li>
+                                </ul>
+                            </div>
                         `;
 
                         treePanel.innerHTML = treeHTML;
+
+                        // Reset Zoom and Pan
+                        treeScale = 1; treeX = 0; treeY = 0;
                     }
 
                 } else {
@@ -2342,6 +2755,127 @@
             document.getElementById('network-panel').classList.remove('on');
             setTimeout(() => act1.classList.remove('leaving'), 50);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+    <!-- ═══ AUTH MODAL ═══ -->
+    <div id="auth-modal-overlay">
+        <div class="auth-modal">
+            <button class="auth-close" id="auth-close">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-signin">Sign In</button>
+                <button class="auth-tab" id="tab-signup">Sign Up</button>
+            </div>
+            <div id="form-signin">
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" />
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" />
+                </div>
+                <button class="auth-btn" onclick="alert('Simulated Login Successful! (Frontend Only)')">Sign In</button>
+            </div>
+            <div id="form-signup" style="display:none;">
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" />
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a password" />
+                </div>
+                <button class="auth-btn" onclick="alert('Simulated Account Created! (Frontend Only)')">Create
+                    Account</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // AUTH MODAL LOGIC
+        const authModalOverlay = document.getElementById('auth-modal-overlay'); // Renamed to avoid conflict
+        const authModal = document.querySelector('.auth-modal'); // Get the actual modal content
+        const authClose = document.getElementById('auth-close');
+        const navAuth = document.getElementById('nav-auth');
+        const navAuthHome = document.getElementById('nav-auth-home');
+
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+            authModalOverlay.classList.add('show');
+        };
+
+        if (navAuth) navAuth.addEventListener('click', openModal);
+        if (navAuthHome) navAuthHome.addEventListener('click', openModal);
+
+        if (authClose) {
+            authClose.addEventListener('click', () => {
+                authModalOverlay.classList.remove('show');
+            });
+        }
+        if (authModalOverlay) { // Use authModalOverlay for click outside
+            authModalOverlay.addEventListener('click', (e) => {
+                if (e.target === authModalOverlay) authModalOverlay.classList.remove('show');
+            });
+        }
+
+        const tabSignIn = document.getElementById('tab-signin');
+        const tabSignUp = document.getElementById('tab-signup');
+        const formSignIn = document.getElementById('form-signin');
+        const formSignUp = document.getElementById('form-signup');
+        if (tabSignIn) {
+            tabSignIn.addEventListener('click', () => {
+                tabSignIn.classList.add('active'); tabSignUp.classList.remove('active');
+                formSignIn.style.display = 'block'; formSignUp.style.display = 'none';
+            });
+        }
+        if (tabSignUp) {
+            tabSignUp.addEventListener('click', () => {
+                tabSignUp.classList.add('active'); tabSignIn.classList.remove('active');
+                formSignUp.style.display = 'block'; formSignIn.style.display = 'none';
+            });
+        }
+
+        // = = = ZOOM & PAN FOR TREE = = =
+        const tp = document.getElementById('network-tree-panel');
+        let treeScale = 1;
+        let treeX = 0, treeY = 0;
+        let isTreeDragging = false;
+        let treeStartX, treeStartY;
+
+        tp.addEventListener('wheel', (e) => {
+            const tree = tp.querySelector('.tree');
+            if (!tree) return;
+            e.preventDefault();
+
+            // Zoom bounds
+            const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+            treeScale *= zoomDelta;
+            treeScale = Math.min(Math.max(0.4, treeScale), 2.5);
+
+            tree.style.transform = `translate(${treeX}px, ${treeY}px) scale(${treeScale})`;
+        }, { passive: false });
+
+        tp.addEventListener('mousedown', (e) => {
+            const tree = tp.querySelector('.tree');
+            if (!tree) return;
+            isTreeDragging = true;
+            treeStartX = e.clientX - treeX;
+            treeStartY = e.clientY - treeY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isTreeDragging) return;
+            e.preventDefault();
+            treeX = e.clientX - treeStartX;
+            treeY = e.clientY - treeStartY;
+            const tree = tp.querySelector('.tree');
+            if (tree) {
+                tree.style.transform = `translate(${treeX}px, ${treeY}px) scale(${treeScale})`;
+            }
+        }, { passive: false });
+
+        window.addEventListener('mouseup', () => {
+            isTreeDragging = false;
         });
     </script>
 </body>

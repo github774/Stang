@@ -11,6 +11,7 @@
         rel="stylesheet" />
     <!-- Three.js for Globe -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <!-- Force Graph for ACT 3 -->
     <script src="https://unpkg.com/force-graph"></script>
     <style>
@@ -83,7 +84,7 @@
         }
 
         .logo-mark {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .9rem;
             letter-spacing: .35em;
             margin-bottom: 2.5rem;
@@ -139,6 +140,54 @@
             border-radius: 16px;
             background: transparent;
             padding: 0;
+        }
+
+        /* Globe Data Popups */
+        #globe-popups {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 250;
+            overflow: hidden;
+        }
+
+        .globe-popup-tag {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transform: translate(-50%, -50%);
+            animation: floatUpData 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        @keyframes floatUpData {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.9);
+            }
+
+            15% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            85% {
+                opacity: 1;
+                transform: translate(-50%, -80%) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -90%) scale(0.95);
+            }
         }
 
         textarea#narrative {
@@ -234,7 +283,7 @@
         #upload-filename {
             margin-left: auto;
             font-size: .78rem;
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             color: var(--cyan);
             white-space: nowrap;
             overflow: hidden;
@@ -307,7 +356,7 @@
         /* arc intersection popup labels */
         .arc-popup {
             position: absolute;
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .68rem;
             padding: .3rem .65rem;
             border-radius: 5px;
@@ -362,7 +411,7 @@
         }
 
         .globe-logo {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .8rem;
             letter-spacing: .3em;
             color: rgba(255, 255, 255, .5);
@@ -374,7 +423,7 @@
             font-size: .8rem;
             color: var(--cyan);
             letter-spacing: .1em;
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             opacity: 0;
             transition: opacity .5s;
             min-height: 1.2em;
@@ -389,7 +438,7 @@
         .globe-label {
             position: absolute;
             font-size: .75rem;
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             padding: .4rem .8rem;
             border-radius: 6px;
             pointer-events: none;
@@ -459,7 +508,7 @@
             transition: opacity .8s cubic-bezier(0.16, 1, 0.3, 1), transform .8s cubic-bezier(0.16, 1, 0.3, 1);
             font-size: .9rem;
             color: rgba(255, 255, 255, .75);
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             letter-spacing: .02em;
             line-height: 1.5;
             text-shadow: 0 1px 8px rgba(0, 0, 0, .5);
@@ -500,7 +549,7 @@
         }
 
         .dash-nav-brand {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .8rem;
             letter-spacing: .25em;
             color: var(--ink-mid);
@@ -564,7 +613,7 @@
         }
 
         .dash-section-label {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .68rem;
             letter-spacing: .2em;
             color: var(--ink-light);
@@ -601,7 +650,7 @@
         }
 
         .stat-cell-label {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .62rem;
             letter-spacing: .18em;
             color: var(--ink-light);
@@ -708,7 +757,7 @@
         }
 
         .panel-title {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .68rem;
             letter-spacing: .18em;
             color: var(--ink-light);
@@ -733,7 +782,7 @@
 
         .ai-para em {
             font-style: normal;
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: .82rem;
             background: rgba(0, 0, 0, .06);
             padding: .1rem .35rem;
@@ -754,6 +803,190 @@
             color: var(--purple);
         }
 
+        /* Network Tree Styles & Layout */
+        .network-layout {
+            display: flex;
+            gap: 1.5rem;
+            align-items: stretch;
+            margin-bottom: 1.5rem;
+        }
+
+        #network-graph-container {
+            flex: 2;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #network-tree-panel {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 520px;
+        }
+
+        .tree-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ink-mid);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding-bottom: 0.75rem;
+        }
+
+        #tree-content {
+            flex: 1;
+            color: var(--ink-light);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #tree-content.has-data {
+            display: block;
+            text-align: left;
+        }
+
+        /* Tree structure elements */
+        .tree-node {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 10px;
+        }
+
+        .tree-node::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: -10px;
+            width: 1.5px;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .tree-node:last-child::before {
+            bottom: auto;
+            height: 20px;
+        }
+
+        .tree-node::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 18px;
+            width: 18px;
+            height: 1.5px;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .tree-box {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--ink);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            text-align: left;
+            transition: transform 0.2s;
+        }
+
+        .tree-box.root {
+            border-top: 3px solid var(--purple);
+            font-weight: 600;
+            padding: 10px 14px;
+        }
+
+        .tree-box.liked {
+            border-left: 3px solid #16a34a;
+        }
+
+        .tree-box.disliked {
+            border-left: 3px solid #c0392b;
+        }
+
+        .tree-box.neutral {
+            border-left: 3px solid #6b7280;
+        }
+
+        .tree-box.didnt {
+            border-left: 3px solid #9ca3af;
+            color: var(--ink-mid);
+        }
+
+        .tree-reaction {
+            font-size: 0.75rem;
+            color: var(--ink-light);
+            display: block;
+            margin-top: 3px;
+            font-weight: 400;
+        }
+
+        /* Inject Panel */
+        .inject-panel {
+            margin-top: 3.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .inject-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            align-items: center;
+        }
+
+        .inject-controls input {
+            flex: 1;
+            padding: 0.95rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s;
+        }
+
+        .inject-controls input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.1);
+        }
+
+        .btn-inject {
+            padding: 0.95rem 2rem;
+            border-radius: 10px;
+            border: none;
+            background: var(--purple);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(107, 63, 160, 0.25);
+        }
+
+        .btn-inject:hover {
+            transform: translateY(-2px);
+            background: #5a3486;
+            box-shadow: 0 6px 16px rgba(107, 63, 160, 0.35);
+        }
+
         /* Network view */
         #network-panel {
             display: none;
@@ -769,12 +1002,48 @@
 
         #network-graph2 {
             width: 100%;
-            height: 440px;
+            height: 480px;
             border-radius: 12px;
             overflow: hidden;
-            background: rgba(255, 255, 255, .8);
+            background: #06070a;
+            /* Dark space background for realism */
             border: 1px solid rgba(0, 0, 0, .08);
-            cursor: grab;
+            position: relative;
+        }
+
+        .network-popup {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+            min-width: 160px;
+        }
+
+        .network-popup.show {
+            opacity: 1;
+        }
+
+        .network-popup .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .network-popup .stat-label {
+            color: var(--ink-mid);
+        }
+
+        .network-popup .stat-val {
+            font-weight: 600;
         }
 
         .net-legend {
@@ -901,7 +1170,7 @@
             letter-spacing: .18em;
             color: var(--ink-light);
             margin-bottom: .75rem;
-            font-family: 'IBM Plex Mono', monospace
+            font-family: 'Inter', system-ui, sans-serif
         }
 
         .card-value {
@@ -984,17 +1253,412 @@
             color: var(--purple);
             transform: translateY(-2px);
         }
+
+        /* ── AUTH MODAL ── */
+        #auth-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #auth-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .auth-modal {
+            background: rgba(22, 22, 26, 0.95);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .auth-close:hover {
+            color: #fff;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-tab {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            padding-bottom: 0.6rem;
+            cursor: pointer;
+            position: relative;
+            top: 2px;
+            transition: color 0.2s;
+        }
+
+        .auth-tab.active {
+            color: #fff;
+            border-bottom: 2px solid var(--purple);
+            font-weight: 600;
+        }
+
+        .auth-form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        .auth-form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .auth-form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .auth-form-group input:focus {
+            border-color: var(--purple);
+            outline: none;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .auth-btn:hover {
+            background: #8559cc;
+            transform: translateY(-1px);
+        }
+
+        /* ── FAMILY TREE (CSS-ONLY) ── */
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: all 0.5s;
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .tree li {
+            float: left;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            transition: all 0.5s;
+        }
+
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 2px solid rgba(0, 0, 0, 0.15);
+            width: 50%;
+            height: 20px;
+            z-index: 1;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 2px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 2px solid rgba(0, 0, 0, 0.15);
+            border-radius: 0 5px 0 0;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0 0 0;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid rgba(0, 0, 0, 0.15);
+            width: 0;
+            height: 20px;
+            z-index: 1;
+        }
+
+        .tree li div.tree-box {
+            text-decoration: none;
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.75rem;
+            display: inline-block;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 10px 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            min-width: 130px;
+            backdrop-filter: blur(8px);
+        }
+
+        .tree li div.tree-box.liked {
+            border-top: 4px solid #16a34a;
+        }
+
+        .tree li div.tree-box.disliked {
+            border-top: 4px solid #c0392b;
+        }
+
+        .tree li div.tree-box.neutral {
+            border-top: 4px solid #eab308;
+        }
+
+        .tree li div.tree-box.root {
+            box-shadow: 0 4px 20px rgba(107, 63, 160, 0.2);
+            border-color: rgba(107, 63, 160, 0.4);
+            border-width: 2px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .tree-reaction {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: var(--ink-mid);
+        }
+
+        #network-tree-panel {
+            overflow: hidden;
+            padding-bottom: 2rem;
+            cursor: grab;
+            position: relative;
+        }
+
+        #network-tree-panel:active {
+            cursor: grabbing;
+        }
+
+        /* ── 3D MEDIA INJECTION ANIMATION (ULTRA REALISTIC GLASS) ── */
+        #injection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 14, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        #injection-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .cube-stack {
+            perspective: 1500px;
+            transform-style: preserve-3d;
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform: rotateX(60deg) rotateZ(-45deg);
+        }
+
+        .layer-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.8),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px) saturate(120%);
+            -webkit-backdrop-filter: blur(8px) saturate(120%);
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+        }
+
+        .layer-block.base-1 {
+            transform: translateZ(0px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .layer-block.base-2 {
+            transform: translateZ(40px);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .layer-block.base-3 {
+            transform: translateZ(80px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .layer-block.payload {
+            transform: translateZ(800px);
+            opacity: 0;
+            border: 1px solid rgba(200, 230, 255, 0.8);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(200, 220, 255, 0.05) 100%);
+            box-shadow:
+                0 40px 80px rgba(0, 30, 100, 0.4),
+                inset 0 1px 30px rgba(255, 255, 255, 0.9),
+                inset 0 -1px 20px rgba(100, 150, 255, 0.3);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+        }
+
+        .layer-block.payload.drop {
+            transform: translateZ(120px);
+            opacity: 1;
+        }
+
+        .layer-grid {
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .overlay-text.pulse {
+            animation: textFlash 2s infinite alternate;
+            opacity: 1;
+        }
+
+        @keyframes textFlash {
+            from {
+                opacity: 0.6;
+            }
+
+            to {
+                opacity: 1;
+                text-shadow: 0 2px 20px rgba(255, 255, 255, 0.5);
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- 3D INJECTION OVERLAY -->
+    <div id="injection-overlay">
+        <div class="cube-stack">
+            <div class="layer-block base-1"></div>
+            <div class="layer-block base-2"></div>
+            <div class="layer-block base-3"></div>
+            <div class="layer-block payload" id="new-media-layer"></div>
+        </div>
+        <div class="overlay-text" id="overlay-status">ASSIMILATING PAYLOAD</div>
+    </div>
 
     <!-- Background Starfield -->
     <canvas id="starfield"></canvas>
 
     <!-- ═══ ACT 1 ═══ -->
     <section id="act1">
-        <div class="logo-mark"><span class="p">PRISM</span><span class="x">×</span><span class="s">SWARM</span></div>
+        <!-- Home Navigation -->
+        <nav
+            style="position: absolute; top: 40px; right: 50px; display: flex; gap: 40px; font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; z-index: 100;">
+            <a href="#" style="color: #fff; text-decoration: none; font-weight: 500;">Home</a>
+            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+                onclick="document.getElementById('simulate-btn').click(); return false;">Swarm Console</a>
+            <a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"
+                onclick="startSim(); setTimeout(showAct3, 1000); return false;">Results</a>
+            <a href="#" id="nav-auth-home" style="color: var(--purple); font-weight: 600; text-decoration: none;">Sign
+                In / Sign Up</a>
+        </nav>
+
+        <div class="logo-mark"><span class="s">SWARM</span></div>
         <h1 class="act1-headline">Drop a narrative<br />into the network.</h1>
         <p class="act1-sub">Paste an ad campaign, political speech, or video transcript. Watch it propagate through
             10,000 simulated minds.</p>
@@ -1022,14 +1686,15 @@
         <div class="globe-label lbl-red" id="lbl3" style="top:60%;left:25%">Low Trust Zone</div>
         <div class="globe-label lbl-cyan" id="lbl4" style="top:55%;right:22%">Bridge Node</div>
         <div class="globe-ui">
-            <div class="globe-logo">PRISM × SWARM</div>
+            <div class="globe-logo">SWARM</div>
             <div class="globe-status" id="globe-status"></div>
         </div>
         <div id="scroll-blocks">
-            <div class="scroll-block" id="sb1">Prism is profiling 10,000 agents across 6 trait dimensions...</div>
+            <div class="scroll-block" id="sb1">Swarm is profiling 10,000 agents across 6 trait dimensions...</div>
             <div class="scroll-block" id="sb2">Swarm is modeling cascade propagation across clusters...</div>
             <div class="scroll-block lit" id="sb3">Polarization index rising. 34% network exposure reached...</div>
         </div>
+        <div id="globe-popups"></div>
     </section>
 
     <!-- arc intersection popups (inside act2) -->
@@ -1039,12 +1704,12 @@
     <section id="act3">
         <!-- Nav -->
         <nav class="dash-nav">
-            <div class="dash-nav-brand"><span class="p">PRISM</span> <span style="opacity:.3">×</span> <span
-                    class="s">SWARM</span></div>
+            <div class="dash-nav-brand"><span class="s">SWARM</span></div>
             <div class="dash-nav-links">
                 <a href="#" id="nav-home">Home</a>
                 <a href="#" class="active">Swarm Console</a>
                 <a href="#" class="active">Results</a>
+                <a href="#" id="nav-auth" style="font-weight:600; color:var(--purple);">Sign In / Sign Up</a>
             </div>
             <div class="dash-tab-group">
                 <button class="dash-tab on" id="tab-overview">OVERVIEW</button>
@@ -1118,15 +1783,16 @@
                     </div>
                     <div class="dash-panel">
                         <div class="panel-title">AI ANALYSIS</div>
-                        <p class="ai-para">The simulation revealed high susceptibility to <strong>echo chamber
-                                formation</strong> under elevated baseline tribalism (avg 65%).</p>
-                        <p class="ai-para">The polarizing event at T=15s triggered rapid belief updates in agents with
-                            <em>InstitutionalTrust &lt; 40</em>, reinforcing priors rather than updating toward neutral.
-                        </p>
-                        <p class="ai-para">The community correction was effective in open-minded clusters, but produced
-                            a <strong>backfire effect</strong> in hardened enclaves.</p>
-                        <div class="key-finding"><strong>KEY FINDING</strong><br>Bridging nodes (low conformity + high
-                            openness) suppress cascade propagation by 40% when positioned at cluster boundaries.</div>
+                        <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
+                                bubbles</strong> when they already feel defensive or strongly tribal.</p>
+                        <p class="ai-para">When the controversial event hit, users who already distrusted mainstream
+                            sources quickly rushed to share the narrative, ignoring fact-checks completely.</p>
+                        <p class="ai-para">Community notes and corrections worked well for open-minded users, but
+                            actually <strong>made things worse</strong> (causing a backfire effect) in the more extreme
+                            groups.</p>
+                        <div class="key-finding"><strong>KEY FINDING</strong><br>Users who naturally talk to multiple
+                            different groups (bridge builders) can slow down the spread of misinformation by up to 40%.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1134,29 +1800,128 @@
             <div id="network-panel">
                 <p style="font-size:.85rem;color:var(--ink-light);margin-bottom:1rem">Reaction network — who received
                     the content, how they reacted, who they shared to. Scroll to zoom, drag to pan.</p>
-                <div id="network-graph2"></div>
-                <div class="net-legend">
-                    <div class="net-dot-row">
-                        <div class="net-dot" style="background:#16a34a"></div>Liked
+                <div class="network-layout">
+                    <!-- Plot Area -->
+                    <div id="network-graph-container">
+                        <div id="network-graph2"></div>
+                        <div class="net-legend">
+                            <div class="net-dot-row">
+                                <div class="net-dot" style="background:#16a34a"></div>Liked
+                            </div>
+                            <div class="net-dot-row">
+                                <div class="net-dot" style="background:#c0392b"></div>Disliked
+                            </div>
+                            <div class="net-dot-row">
+                                <div class="net-dot" style="background:#888"></div>Neutral
+                            </div>
+                            <div class="net-dot-row">
+                                <div class="net-dot"
+                                    style="background:rgba(0,0,0,0);border:2px solid #6b3fa0;box-sizing:border-box">
+                                </div>Shared
+                                (ring)
+                            </div>
+                        </div>
                     </div>
-                    <div class="net-dot-row">
-                        <div class="net-dot" style="background:#c0392b"></div>Disliked
-                    </div>
-                    <div class="net-dot-row">
-                        <div class="net-dot" style="background:#888"></div>Neutral
-                    </div>
-                    <div class="net-dot-row">
-                        <div class="net-dot"
-                            style="background:rgba(0,0,0,0);border:2px solid #6b3fa0;box-sizing:border-box"></div>Shared
-                        (ring)
+                    <!-- Right Cutoff Replacer (Family Tree) -->
+                    <div id="network-tree-panel">
+                        <div class="tree-header">Agent Propagation Tree</div>
+                        <div id="tree-content">Click a node in the 3D network to view its propagation path.</div>
                     </div>
                 </div>
             </div>
-            <button class="btn-reset" id="reset-btn">↩ Run New Simulation</button>
+
+            <!-- Inject New Media -->
+            <div class="inject-panel">
+                <div class="dash-title" style="margin-bottom:0.5rem; font-size:1.6rem;">Inject New Media</div>
+                <p style="color:var(--ink-mid); font-size:1rem;">Cross-pollinate narratives by injecting new media into
+                    the current memetic simulation mapping.</p>
+                <div class="inject-controls">
+                    <input type="text" placeholder="Paste URL source or new narrative direction..."
+                        id="media-injection">
+                    <button class="btn-inject" id="btn-deploy" onclick="deployPayload()">Deploy Payload</button>
+                    <button class="btn-reset" id="reset-btn" style="margin:0;">↩ Reset Simulation</button>
+                </div>
+            </div>
         </div>
     </section>
 
     <script>
+        function deployPayload() {
+            const btn = document.getElementById('btn-deploy');
+            const input = document.getElementById('media-injection');
+            if (!input.value.trim()) return;
+
+            const originalText = btn.innerText;
+            btn.innerText = "Injecting payload...";
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            // Trigger Animation Overlay
+            const overlay = document.getElementById('injection-overlay');
+            const payloadLayer = document.getElementById('new-media-layer');
+            const statusText = document.getElementById('overlay-status');
+
+            overlay.classList.add('active');
+            statusText.classList.add('pulse');
+            statusText.innerText = "ASSIMILATING PAYLOAD";
+
+            // Drop sequence
+            setTimeout(() => {
+                payloadLayer.classList.add('drop');
+            }, 100);
+
+            // Simulate calculation hidden behind overlay
+            setTimeout(() => {
+                // Re-randomize stats
+                const rnd = () => 0.8 + Math.random() * 0.5; // randomize 80-130%
+                countUp('cnt-impressions', Math.floor(12402 * rnd()), '');
+                countUp('cnt-likes', Math.floor(3847 * rnd()), '');
+                countUp('cnt-dislikes', Math.floor(1923 * rnd()), '');
+                countUp('cnt-shares', Math.floor(2109 * rnd()), '');
+                countUp('cnt-comments', Math.floor(742 * rnd()), '');
+
+                document.getElementById('rxn-liked').style.width = Math.floor(31 * rnd()) + '%';
+                document.getElementById('rxn-disliked').style.width = Math.floor(16 * rnd()) + '%';
+                document.getElementById('rxn-shared').style.width = Math.floor(17 * rnd()) + '%';
+                document.getElementById('rxn-comment').style.width = Math.floor(6 * rnd()) + '%';
+
+                drawBeliefChart();
+
+                // Clear old 3D network graph and redraw
+                const cont = document.getElementById('network-graph2');
+                if (cont) {
+                    cont.innerHTML = '';
+                    networkRenderer = null; // force clear references
+                    renderNetworkGraph();
+                }
+
+                // Clear the propagation tree right panel
+                const treePanel = document.getElementById('tree-content');
+                if (treePanel) {
+                    treePanel.classList.remove('has-data');
+                    treePanel.innerHTML = 'Click a node in the 3D network to view its propagation path.';
+                }
+
+                statusText.innerText = "SYSTEM RECALIBRATED";
+
+                // Clean up state and hide overlay
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    payloadLayer.classList.remove('drop');
+                    statusText.classList.remove('pulse');
+                    input.value = ''; // clear input
+                    btn.innerText = originalText;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+
+                    // Scroll to overview/network so user sees it regenerate
+                    document.getElementById('tab-overview').click();
+                    document.querySelector('.dash-title').scrollIntoView({ behavior: 'smooth' });
+                }, 1200);
+
+            }, 1600); // Complete animation sequence length
+        }
+
         // ════════════════════════════════════════════════════════════
         // FLOATING PARTICLES (light theme background)
         // ════════════════════════════════════════════════════════════
@@ -1383,7 +2148,7 @@
                 dot, dotMat: dotMat2, dotGeo,
                 curve, pts,
                 tOffset: Math.random() * Math.PI * 2,
-                speed: Math.random() * 0.022 + 0.01,
+                speed: Math.random() * 0.008 + 0.003, // SLOWER: was 0.022 + 0.01
                 dotT: Math.random()
             });
         }
@@ -1405,6 +2170,8 @@
             globeGroup.rotation.y += 0.001;
             globeGroup.rotation.z += 0.0002;
 
+            const popupsContainer = document.getElementById('globe-popups');
+
             // Arc pulses + traveling firefly
             arcs.forEach(a => {
                 if (simRunning) {
@@ -1420,6 +2187,38 @@
                         a.dotGeo.attributes.position.setXYZ(0, pos.x, pos.y, pos.z);
                         a.dotGeo.attributes.position.needsUpdate = true;
                         a.dotMat.opacity = pulse * 1.0;
+
+                        // Randomly emit a floating data popup over the globe
+                        if (Math.random() < 0.003 && popupsContainer && popupsContainer.children.length < 8) {
+                            const screenPos = pos.clone().project(camera);
+                            // only draw if in front of camera
+                            if (screenPos.z < 1) {
+                                const x = (screenPos.x * .5 + .5) * window.innerWidth;
+                                const y = (screenPos.y * -.5 + .5) * window.innerHeight;
+
+                                const p = document.createElement('div');
+                                p.className = 'globe-popup-tag';
+                                p.style.left = x + 'px';
+                                p.style.top = y + 'px';
+
+                                const messages = [
+                                    `Agent #${Math.floor(Math.random() * 9000)} Reacted`,
+                                    'Trust +' + Math.floor(Math.random() * 8) + '%',
+                                    'Node Activated',
+                                    'Priors Updated',
+                                    `Shared (+${Math.floor(Math.random() * 15)} sub-nodes)`,
+                                    'Analyzing...'
+                                ];
+                                p.innerText = messages[Math.floor(Math.random() * messages.length)];
+                                popupsContainer.appendChild(p);
+
+                                // Auto remove after animation completes
+                                setTimeout(() => {
+                                    if (p.parentNode) p.remove();
+                                }, 2100);
+                            }
+                        }
+
                     } else {
                         a.mat.opacity = 0;
                         if (a.coreMat) a.coreMat.opacity = 0;
@@ -1560,7 +2359,7 @@
             geo.attributes.color.needsUpdate = true;
 
             // status text
-            const msgs = ['INJECTING NARRATIVE INTO NETWORK...', 'PRISM: PROFILING 10,000 AGENTS...', 'SWARM: PROPAGATING BELIEF WAVES...', 'POLARIZATION INDEX: RISING...'];
+            const msgs = ['INJECTING NARRATIVE INTO NETWORK...', 'SWARM: PROFILING 10,000 AGENTS...', 'SWARM: PROPAGATING BELIEF WAVES...', 'POLARIZATION INDEX: RISING...'];
             status.classList.add('visible');
             let mi = 0;
             status.textContent = msgs[0];
@@ -1627,101 +2426,279 @@
                     y0 -= bh;
                 });
                 ctx.fillStyle = 'rgba(0,0,0,.45)';
-                ctx.font = `${Math.max(9, W * 0.018)}px 'IBM Plex Mono',monospace`;
+                ctx.font = `${Math.max(9, W * 0.018)}px 'Inter', system-ui, sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.fillText(labels[xi], xi * gap + gap / 2, H - 2);
             }
             // Legend
             [['Neutral', 'rgba(0,0,0,.15)'], ['Skeptical', '#2563eb'], ['Polarized', '#1a1a1a']].forEach(([l, c2], i) => {
                 ctx.fillStyle = c2; ctx.fillRect(4 + i * 74, 4, 11, 11);
-                ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.font = `${Math.max(8, W * 0.016)}px 'IBM Plex Mono',monospace`;
+                ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.font = `${Math.max(8, W * 0.016)}px 'Inter', system-ui, sans-serif`;
                 ctx.textAlign = 'left'; ctx.fillText(l, 18 + i * 74, 13);
             });
         }
 
-        // = = = NETWORK GRAPH (colored agents) — custom canvas physics = = =
-        let fgInstance = null;
+        // = = = NETWORK GRAPH (3D Solar System) = = =
+        let networkScene, networkCamera, networkRenderer, networkControls;
+        let networkNodes = [], networkLinks = [];
+        let networkReq = null;
+        let starGroup;
+
         function renderNetworkGraph() {
             const cont = document.getElementById('network-graph2');
-            if (fgInstance) return;
-            fgInstance = true;
+            if (networkRenderer) return; // already initialized
 
-            const nNodes = 80;
-            const nodes = [], links = [];
+            cont.innerHTML = '';
+            const popup = document.createElement('div');
+            popup.className = 'network-popup';
+            cont.appendChild(popup);
+
+            const W = cont.clientWidth || 900;
+            const H = cont.clientHeight || 480;
+
+            networkScene = new THREE.Scene();
+
+            // Add lighting for ultra-realistic 3D shaded look
+            networkScene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            const dl = new THREE.DirectionalLight(0xffffff, 1.2);
+            dl.position.set(200, 300, 400);
+            networkScene.add(dl);
+            const dl2 = new THREE.DirectionalLight(0xffffff, 0.5);
+            dl2.position.set(-200, -300, -400);
+            networkScene.add(dl2);
+
+            networkCamera = new THREE.PerspectiveCamera(45, W / H, 1, 2000);
+            networkCamera.position.set(0, 200, 450);
+
+            networkRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            networkRenderer.setSize(W, H);
+            networkRenderer.setPixelRatio(window.devicePixelRatio);
+            cont.appendChild(networkRenderer.domElement);
+
+            if (typeof THREE.OrbitControls !== 'undefined') {
+                networkControls = new THREE.OrbitControls(networkCamera, networkRenderer.domElement);
+                networkControls.enableDamping = true;
+                networkControls.dampingFactor = 0.05;
+                networkControls.autoRotate = false; // We'll handle constant multi-axis rotation manually
+            }
+
+            starGroup = new THREE.Group();
+            networkScene.add(starGroup);
+
+            // Generate Nodes representing Users (Stars)
+            const nNodes = 450; // Massively increased for dense realism
+            const nodesData = [];
+
+            const colorMap = {
+                'liked': 0xa7f3d0,     // pale glowing green
+                'disliked': 0xfecaca,  // pale glowing red
+                'neutral': 0xfef08a,   // pale glowing yellow (matches reference image)
+                'didnt': 0x6b7280      // dim gray
+            };
+
+            // Use SphereGeometry for smooth, realistic nodes
+            const nodeGeo = new THREE.SphereGeometry(1.2, 32, 32); // Smooth sphere
+
             for (let i = 0; i < nNodes; i++) {
                 const r = Math.random();
                 const reaction = r < .38 ? 'liked' : r < .54 ? 'disliked' : r < .75 ? 'neutral' : 'didnt';
                 const shared = Math.random() < .44;
-                nodes.push({ id: i, reaction, shared, x: Math.random() * 800, y: Math.random() * 440, vx: 0, vy: 0 });
+
+                // Distribute in a galaxy disk (solar system-like) with clusters
+                const angle = Math.random() * Math.PI * 2;
+                // Dense core, sparse outer branches
+                const radius = Math.pow(Math.random(), 1.5) * 220 + (Math.random() < 0.1 ? 5 : 20);
+                const height = (Math.random() - 0.5) * (1800 / (radius + 15));
+
+                const pos = new THREE.Vector3(
+                    Math.cos(angle) * radius + (Math.random() - 0.5) * 15,
+                    height + (Math.random() - 0.5) * 15,
+                    Math.sin(angle) * radius + (Math.random() - 0.5) * 15
+                );
+
+                // Main star
+                const size = shared ? 2.5 : 1.2;
+
+                // Ultra realistic material
+                const mat = new THREE.MeshPhysicalMaterial({ // Use MeshPhysicalMaterial for more realism
+                    color: colorMap[reaction],
+                    emissive: colorMap[reaction],
+                    emissiveIntensity: 0.3,
+                    roughness: 0.2,
+                    metalness: 0.8,
+                    clearcoat: 1.0, // Add clearcoat for a glossy finish
+                    clearcoatRoughness: 0.1
+                });
+
+                const mesh = new THREE.Mesh(nodeGeo, mat);
+                mesh.position.copy(pos);
+                mesh.scale.set(size, size, size);
+
+                // Add to group for interaction
+                mesh.userData = { id: i, reaction, shared, influence: Math.floor(Math.random() * 100) };
+                starGroup.add(mesh);
+                networkNodes.push(mesh);
+                nodesData.push(pos);
             }
+
+            // Generate Dense Connections (Web-like)
+            const lineMat = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending
+            });
+
+            // Connect nearby nodes to form the classic dense web
             for (let i = 0; i < nNodes; i++) {
-                const n = Math.floor(Math.random() * 3) + 1;
-                for (let k = 0; k < n; k++) {
-                    const t = Math.floor(Math.random() * nNodes);
-                    if (t !== i) links.push({ s: i, t });
+                let connections = 0;
+                for (let j = i + 1; j < nNodes; j++) {
+                    const dist = nodesData[i].distanceTo(nodesData[j]);
+                    if (dist < 45 && connections < 8) { // Only connect if close
+                        const pts = [nodesData[i], nodesData[j]];
+                        const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+                        const line = new THREE.Line(lineGeo, lineMat);
+                        starGroup.add(line);
+                        connections++;
+                    }
                 }
             }
-            const nodeColor = n => n.reaction === 'liked' ? '#16a34a' : n.reaction === 'disliked' ? '#c0392b' : n.reaction === 'neutral' ? '#6b7280' : 'rgba(150,150,150,.4)';
 
-            const cv = document.createElement('canvas');
-            cont.innerHTML = ''; cont.appendChild(cv);
-            cv.style.cssText = 'width:100%;height:440px;display:block;border-radius:12px;';
-            const W = cont.clientWidth || 900, H = 440;
-            cv.width = W; cv.height = H;
-            const cx = cv.getContext('2d');
-            nodes.forEach(n => { n.x = W / 2 + (Math.random() - .5) * W * .8; n.y = H / 2 + (Math.random() - .5) * H * .8; });
+            // Interaction Setup
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            let hoveredObj = null;
+
+            cont.addEventListener('mousemove', (e) => {
+                const rect = networkRenderer.domElement.getBoundingClientRect();
+                mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, networkCamera);
+
+                // Only intersect the spheres (networkNodes), not the rings or lines
+                const intersects = raycaster.intersectObjects(networkNodes);
+
+                if (intersects.length > 0) {
+                    document.body.style.cursor = 'pointer';
+                    const obj = intersects[0].object;
+                    if (hoveredObj !== obj) {
+                        if (hoveredObj) hoveredObj.material.color.setHex(colorMap[hoveredObj.userData.reaction]);
+                        hoveredObj = obj;
+                        // Brighten on hover
+                        const hoverColor = new THREE.Color(colorMap[obj.userData.reaction]).offsetHSL(0, 0, 0.2);
+                        obj.material.color.copy(hoverColor);
+                    }
+                } else {
+                    document.body.style.cursor = 'default';
+                    if (hoveredObj) {
+                        hoveredObj.material.color.setHex(colorMap[hoveredObj.userData.reaction]);
+                        hoveredObj = null;
+                    }
+                }
+            });
+
+            cont.addEventListener('click', (e) => {
+                if (hoveredObj) {
+                    const d = hoveredObj.userData;
+                    const rMap = { 'liked': 'Liked Proposal', 'disliked': 'Rejected Proposal', 'neutral': 'Neutral/Indifferent', 'didnt': 'No Interaction' };
+                    popup.innerHTML = `
+                        <div style="font-weight:600;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:4px">User Agent #${d.id}</div>
+                        <div class="stat-row"><span class="stat-label">Reaction:</span><span class="stat-val" style="color:${d.reaction === 'liked' ? 'var(--green)' : 'inherit'}">${rMap[d.reaction]}</span></div>
+                        <div class="stat-row"><span class="stat-label">Shared:</span><span class="stat-val">${d.shared ? 'Yes (Pass-on)' : 'No'}</span></div>
+                        <div class="stat-row"><span class="stat-label">Influence:</span><span class="stat-val">${d.influence}%</span></div>
+                    `;
+
+                    // Position popup near mouse
+                    const rect = cont.getBoundingClientRect();
+                    let px = e.clientX - rect.left + 15;
+                    let py = e.clientY - rect.top + 15;
+
+                    popup.style.left = px + 'px';
+                    popup.style.top = py + 'px';
+                    popup.classList.add('show');
+
+                    // --- Generate Propagation Tree ---
+                    const treePanel = document.getElementById('tree-content');
+                    if (treePanel) {
+                        treePanel.classList.add('has-data');
+                        const rMapTree = { 'liked': 'Liked', 'disliked': 'Disliked', 'neutral': 'Neutral', 'didnt': 'Ignored' };
+
+                        let treeHTML = `
+                            <div class="tree" style="transform-origin: top center; transition: transform 0.1s ease-out;">
+                                <ul>
+                                    <li>
+                                        <div class="tree-box root ${d.reaction}">
+                                            <strong>Agent #${d.id}</strong><br>
+                                            <span class="tree-reaction">Action: ${rMapTree[d.reaction]}<br>Influence: ${d.influence}%</span>
+                                        </div>
+                        `;
+
+                        if (d.shared) {
+                            treeHTML += `<ul>`;
+                            const numBranches = Math.floor(Math.random() * 3) + 2; // 2 to 4 direct children
+                            for (let b = 0; b < numBranches; b++) {
+                                const bReax = Math.random() < 0.5 ? 'liked' : (Math.random() < 0.5 ? 'neutral' : 'disliked');
+                                const subNodes = Math.random() < 0.5; // 50% chance of deeper branches
+                                treeHTML += `
+                                    <li>
+                                        <div class="tree-box ${bReax}">
+                                            <strong>Agent #${Math.floor(Math.random() * 2000)}</strong><br>
+                                            <span class="tree-reaction">Action: ${rMapTree[bReax]}</span>
+                                        </div>
+                                `;
+                                if (subNodes) {
+                                    treeHTML += `<ul>
+                                        <li>
+                                            <div class="tree-box neutral">
+                                                <strong>Agent #${Math.floor(Math.random() * 2000)}</strong><br>
+                                                <span class="tree-reaction">Action: Neutral</span>
+                                            </div>
+                                        </li>
+                                    </ul>`;
+                                }
+                                treeHTML += `</li>`;
+                            }
+                            treeHTML += `</ul>`;
+                        } else if (d.reaction !== 'didnt') {
+                            // Show single terminal note
+                            treeHTML += `<ul><li><div class="tree-box" style="border-top:2px solid #ccc;opacity:0.7"><strong>Terminal Node</strong><br><span class="tree-reaction">Did not pass on</span></div></li></ul>`;
+                        } else {
+                            treeHTML += `<ul><li><div class="tree-box" style="border-top:2px solid #ccc;opacity:0.7"><strong>Ignored</strong><br><span class="tree-reaction">No interaction detected</span></div></li></ul>`;
+                        }
+
+                        treeHTML += `
+                                    </li>
+                                </ul>
+                            </div>
+                        `;
+
+                        treePanel.innerHTML = treeHTML;
+
+                        // Reset Zoom and Pan
+                        treeScale = 1; treeX = 0; treeY = 0;
+                    }
+
+                } else {
+                    popup.classList.remove('show');
+                }
+            });
+
+            // Prevent scroll on drag
+            networkRenderer.domElement.addEventListener('wheel', e => e.preventDefault(), { passive: false });
 
             function tick() {
-                for (let i = 0; i < nNodes; i++) {
-                    for (let j = i + 1; j < nNodes; j++) {
-                        const dx = nodes[j].x - nodes[i].x, dy = nodes[j].y - nodes[i].y;
-                        const d2 = dx * dx + dy * dy + 1, f = 400 / d2;
-                        nodes[i].vx -= dx * f; nodes[i].vy -= dy * f;
-                        nodes[j].vx += dx * f; nodes[j].vy += dy * f;
-                    }
-                }
-                links.forEach(({ s, t }) => {
-                    const dx = nodes[t].x - nodes[s].x, dy = nodes[t].y - nodes[s].y;
-                    const d = Math.sqrt(dx * dx + dy * dy) + .01, f = (d - 80) * .012;
-                    nodes[s].vx += dx / d * f; nodes[s].vy += dy / d * f;
-                    nodes[t].vx -= dx / d * f; nodes[t].vy -= dy / d * f;
-                });
-                nodes.forEach(n => {
-                    n.vx += (W / 2 - n.x) * .003; n.vy += (H / 2 - n.y) * .003;
-                    n.vx *= .82; n.vy *= .82;
-                    n.x = Math.max(14, Math.min(W - 14, n.x + n.vx));
-                    n.y = Math.max(14, Math.min(H - 14, n.y + n.vy));
-                });
+                networkReq = requestAnimationFrame(tick);
+                if (networkControls) networkControls.update();
 
-                cx.clearRect(0, 0, W, H);
-                cx.globalAlpha = .2; cx.strokeStyle = '#374151'; cx.lineWidth = .85;
-                links.forEach(({ s, t }) => { cx.beginPath(); cx.moveTo(nodes[s].x, nodes[s].y); cx.lineTo(nodes[t].x, nodes[t].y); cx.stroke(); });
-                cx.globalAlpha = 1;
-                nodes.forEach(n => {
-                    const r = n.shared ? 7 : 5;
-                    cx.beginPath(); cx.arc(n.x, n.y, r, 0, Math.PI * 2);
-                    cx.fillStyle = nodeColor(n); cx.fill();
-                    if (n.shared) { cx.beginPath(); cx.arc(n.x, n.y, r + 3, 0, Math.PI * 2); cx.strokeStyle = '#6b3fa0'; cx.lineWidth = 1.5; cx.stroke(); }
-                });
-                requestAnimationFrame(tick);
+                // Constant 3D Multi-axis Movement
+                starGroup.rotation.y += 0.0012;
+                starGroup.rotation.x += 0.0004;
+                starGroup.rotation.z -= 0.0003;
+
+                networkRenderer.render(networkScene, networkCamera);
             }
             tick();
-                .nodeColor(nodeColor)
-                .nodeCanvasObject((node, ctx2, globalScale) => {
-                    const r = (node.shared ? 7 : 5) / globalScale;
-                    ctx2.beginPath(); ctx2.arc(node.x, node.y, r, 0, 2 * Math.PI);
-                    ctx2.fillStyle = nodeColor(node); ctx2.fill();
-                    if (node.shared) {
-                        ctx2.strokeStyle = '#6b3fa0'; ctx2.lineWidth = 1.5 / globalScale;
-                        ctx2.beginPath(); ctx2.arc(node.x, node.y, r + 2 / globalScale, 0, 2 * Math.PI); ctx2.stroke();
-                    }
-                })
-                .nodeCanvasObjectMode(() => 'replace')
-                .linkColor(() => 'rgba(60,60,80,.25)')
-                .linkWidth(0.8)
-                .width(cont.clientWidth).height(440)
-                .d3AlphaDecay(0.015)
-                .d3VelocityDecay(0.1);
         }
 
         // = = = TAB SWITCHING = = =
@@ -1778,6 +2755,127 @@
             document.getElementById('network-panel').classList.remove('on');
             setTimeout(() => act1.classList.remove('leaving'), 50);
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+    <!-- ═══ AUTH MODAL ═══ -->
+    <div id="auth-modal-overlay">
+        <div class="auth-modal">
+            <button class="auth-close" id="auth-close">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-signin">Sign In</button>
+                <button class="auth-tab" id="tab-signup">Sign Up</button>
+            </div>
+            <div id="form-signin">
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" />
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••" />
+                </div>
+                <button class="auth-btn" onclick="alert('Simulated Login Successful! (Frontend Only)')">Sign In</button>
+            </div>
+            <div id="form-signup" style="display:none;">
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" />
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a password" />
+                </div>
+                <button class="auth-btn" onclick="alert('Simulated Account Created! (Frontend Only)')">Create
+                    Account</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // AUTH MODAL LOGIC
+        const authModalOverlay = document.getElementById('auth-modal-overlay'); // Renamed to avoid conflict
+        const authModal = document.querySelector('.auth-modal'); // Get the actual modal content
+        const authClose = document.getElementById('auth-close');
+        const navAuth = document.getElementById('nav-auth');
+        const navAuthHome = document.getElementById('nav-auth-home');
+
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+            authModalOverlay.classList.add('show');
+        };
+
+        if (navAuth) navAuth.addEventListener('click', openModal);
+        if (navAuthHome) navAuthHome.addEventListener('click', openModal);
+
+        if (authClose) {
+            authClose.addEventListener('click', () => {
+                authModalOverlay.classList.remove('show');
+            });
+        }
+        if (authModalOverlay) { // Use authModalOverlay for click outside
+            authModalOverlay.addEventListener('click', (e) => {
+                if (e.target === authModalOverlay) authModalOverlay.classList.remove('show');
+            });
+        }
+
+        const tabSignIn = document.getElementById('tab-signin');
+        const tabSignUp = document.getElementById('tab-signup');
+        const formSignIn = document.getElementById('form-signin');
+        const formSignUp = document.getElementById('form-signup');
+        if (tabSignIn) {
+            tabSignIn.addEventListener('click', () => {
+                tabSignIn.classList.add('active'); tabSignUp.classList.remove('active');
+                formSignIn.style.display = 'block'; formSignUp.style.display = 'none';
+            });
+        }
+        if (tabSignUp) {
+            tabSignUp.addEventListener('click', () => {
+                tabSignUp.classList.add('active'); tabSignIn.classList.remove('active');
+                formSignUp.style.display = 'block'; formSignIn.style.display = 'none';
+            });
+        }
+
+        // = = = ZOOM & PAN FOR TREE = = =
+        const tp = document.getElementById('network-tree-panel');
+        let treeScale = 1;
+        let treeX = 0, treeY = 0;
+        let isTreeDragging = false;
+        let treeStartX, treeStartY;
+
+        tp.addEventListener('wheel', (e) => {
+            const tree = tp.querySelector('.tree');
+            if (!tree) return;
+            e.preventDefault();
+
+            // Zoom bounds
+            const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+            treeScale *= zoomDelta;
+            treeScale = Math.min(Math.max(0.4, treeScale), 2.5);
+
+            tree.style.transform = `translate(${treeX}px, ${treeY}px) scale(${treeScale})`;
+        }, { passive: false });
+
+        tp.addEventListener('mousedown', (e) => {
+            const tree = tp.querySelector('.tree');
+            if (!tree) return;
+            isTreeDragging = true;
+            treeStartX = e.clientX - treeX;
+            treeStartY = e.clientY - treeY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isTreeDragging) return;
+            e.preventDefault();
+            treeX = e.clientX - treeStartX;
+            treeY = e.clientY - treeStartY;
+            const tree = tp.querySelector('.tree');
+            if (tree) {
+                tree.style.transform = `translate(${treeX}px, ${treeY}px) scale(${treeScale})`;
+            }
+        }, { passive: false });
+
+        window.addEventListener('mouseup', () => {
+            isTreeDragging = false;
         });
     </script>
 </body>

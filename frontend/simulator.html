@@ -1853,13 +1853,14 @@
                     </div>
                     <div class="dash-panel" style="flex:1;">
                         <div class="panel-title">AI ANALYSIS</div>
-                        <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
-                                bubbles</strong> when they already feel defensive or strongly tribal.</p>
-                        <p class="ai-para">When the controversial event hit, users who already distrusted mainstream
-                            sources quickly rushed to share the narrative, ignoring fact-checks completely.</p>
-                        <p class="ai-para">Community notes and corrections worked well for open-minded users, but
-                            actually <strong>made things worse</strong> (causing a backfire effect) in the more extreme
-                            groups.</p>
+                        <div id="ai-analysis-text">
+                            <p class="ai-para">The simulation shows that people tend to form <strong>tight-knit online
+                                    bubbles</strong> when they already feel defensive or strongly tribal.</p>
+                            <p class="ai-para">When the controversial event hit, users who already distrusted mainstream
+                                sources quickly rushed to share the narrative, ignoring fact-checks completely.</p>
+                            <p class="ai-para">Community notes and corrections worked well for open-minded users, but
+                                ultimately failed to penetrate closed echo chambers.</p>
+                        </div>
                         <div class="key-finding"><strong>KEY FINDING</strong><br>Users who naturally talk to multiple
                             different groups (bridge builders) can slow down the spread of misinformation by up to 40%.
                         </div>
@@ -1916,10 +1917,11 @@
     </section>
 
     <script>
-        function deployPayload() {
+        async function deployPayload() {
             const btn = document.getElementById('btn-deploy');
             const input = document.getElementById('media-injection');
-            if (!input.value.trim()) return;
+            const txt = input.value.trim();
+            if (!txt) return;
 
             const originalText = btn.innerText;
             btn.innerText = "Injecting payload...";
@@ -1940,56 +1942,83 @@
                 payloadLayer.classList.add('drop');
             }, 100);
 
-            // Simulate calculation hidden behind overlay
-            setTimeout(() => {
-                // Re-randomize stats
-                const rnd = () => 0.8 + Math.random() * 0.5; // randomize 80-130%
-                countUp('cnt-impressions', Math.floor(12402 * rnd()), '');
-                countUp('cnt-likes', Math.floor(3847 * rnd()), '');
-                countUp('cnt-dislikes', Math.floor(1923 * rnd()), '');
-                countUp('cnt-shares', Math.floor(2109 * rnd()), '');
-                countUp('cnt-comments', Math.floor(742 * rnd()), '');
+            try {
+                // Determine current audience - default to general if not available here
+                const audSelect = document.getElementById('audience-select');
+                const aud = audSelect ? audSelect.value : 'general';
 
-                document.getElementById('rxn-liked').style.width = Math.floor(31 * rnd()) + '%';
-                document.getElementById('rxn-disliked').style.width = Math.floor(16 * rnd()) + '%';
-                document.getElementById('rxn-shared').style.width = Math.floor(17 * rnd()) + '%';
-                document.getElementById('rxn-comment').style.width = Math.floor(6 * rnd()) + '%';
+                const res = await fetch('http://localhost:8000/api/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ narrative: txt, audience: aud })
+                });
 
-                drawBeliefChart();
+                if (!res.ok) throw new Error('API Error');
+                const data = await res.json();
 
-                // Clear old 3D network graph and redraw
-                const cont = document.getElementById('network-graph2');
-                if (cont) {
-                    cont.innerHTML = '';
-                    networkRenderer = null; // force clear references
-                    renderNetworkGraph();
-                }
+                // Fake a little calculation time for dramatic effect
+                setTimeout(() => {
+                    countUp('cnt-impressions', data.metrics.impressions, '');
+                    countUp('cnt-likes', data.metrics.likes, '');
+                    countUp('cnt-dislikes', data.metrics.dislikes, '');
+                    countUp('cnt-shares', data.metrics.shares, '');
+                    countUp('cnt-comments', data.metrics.comments, '');
 
-                // Clear the propagation tree right panel
-                const treePanel = document.getElementById('tree-content');
-                if (treePanel) {
-                    treePanel.classList.remove('has-data');
-                    treePanel.innerHTML = 'Click a node in the 3D network to view its propagation path.';
-                }
+                    document.getElementById('rxn-liked').style.width = data.reactions.liked + '%';
+                    document.getElementById('rxn-disliked').style.width = data.reactions.disliked + '%';
+                    document.getElementById('rxn-shared').style.width = data.reactions.shared + '%';
+                    document.getElementById('rxn-comment').style.width = data.reactions.comment + '%';
+                    document.getElementById('rxn-none').style.width = data.reactions.none + '%';
 
-                statusText.innerText = "SYSTEM RECALIBRATED";
+                    document.getElementById('ai-analysis-text').innerHTML = '<p class="ai-para">' + data.analysis + '</p>';
 
-                // Clean up state and hide overlay
+                    drawBeliefChart(data.charts);
+
+                    // Clear old 3D network graph and redraw
+                    const cont = document.getElementById('network-graph2');
+                    if (cont) {
+                        cont.innerHTML = '';
+                        networkRenderer = null; // force clear references
+                        renderNetworkGraph();
+                    }
+
+                    // Clear the propagation tree right panel
+                    const treePanel = document.getElementById('tree-content');
+                    if (treePanel) {
+                        treePanel.classList.remove('has-data');
+                        treePanel.innerHTML = 'Click a node in the 3D network to view its propagation path.';
+                    }
+
+                    statusText.innerText = "SYSTEM RECALIBRATED";
+
+                    // Clean up state and hide overlay
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                        payloadLayer.classList.remove('drop');
+                        statusText.classList.remove('pulse');
+                        input.value = ''; // clear input
+                        btn.innerText = originalText;
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+
+                        // Scroll to overview/network so user sees it regenerate
+                        document.getElementById('tab-overview').click();
+                        document.querySelector('.dash-title').scrollIntoView({ behavior: 'smooth' });
+                    }, 2500);
+                }, 1000);
+
+            } catch (err) {
+                console.error(err);
+                statusText.innerText = "CONNECTION ERROR: Is Python Backend running?";
                 setTimeout(() => {
                     overlay.classList.remove('active');
                     payloadLayer.classList.remove('drop');
                     statusText.classList.remove('pulse');
-                    input.value = ''; // clear input
                     btn.innerText = originalText;
                     btn.style.opacity = '1';
                     btn.style.pointerEvents = 'auto';
-
-                    // Scroll to overview/network so user sees it regenerate
-                    document.getElementById('tab-overview').click();
-                    document.querySelector('.dash-title').scrollIntoView({ behavior: 'smooth' });
-                }, 1200);
-
-            }, 1600); // Complete animation sequence length
+                }, 3000);
+            }
         }
 
         // ════════════════════════════════════════════════════════════
@@ -2334,7 +2363,7 @@
 
                     if (wt >= 1 && simRunning) {
                         simRunning = false;
-                        setTimeout(showAct3, 1000);
+                        // Timeouts handled in interval check
                     }
                 }
             } else {
@@ -2397,7 +2426,7 @@
             }
         });
 
-        document.getElementById('simulate-btn').addEventListener('click', () => {
+        document.getElementById('simulate-btn').addEventListener('click', async () => {
             const txt = document.getElementById('narrative').value.trim();
             const hasFile = fileInput.files && fileInput.files.length > 0;
             if (!txt && !hasFile) {
@@ -2407,10 +2436,34 @@
                 setTimeout(() => { ta.style.borderColor = ''; ta.style.boxShadow = ''; }, 1200);
                 return;
             }
-            startSim();
+
+            const btn = document.getElementById('simulate-btn');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '<span>Connecting to Backend...</span>';
+            btn.style.pointerEvents = 'none';
+
+            try {
+                const aud = document.getElementById('audience-select').value;
+                const narrative = txt || "Default narrative from uploaded file";
+                const res = await fetch('http://localhost:8000/api/simulate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ narrative: narrative, audience: aud })
+                });
+
+                if (!res.ok) throw new Error('API Error');
+                const data = await res.json();
+
+                startSim(data);
+            } catch (err) {
+                console.error(err);
+                alert("Cannot reach simulator backend. Ensure 'uvicorn main:app --port 8000' is running in the backend directory.");
+                btn.innerHTML = origHTML;
+                btn.style.pointerEvents = 'auto';
+            }
         });
 
-        function startSim() {
+        function startSim(backendData) {
             // exit act1
             act1.classList.add('leaving');
             setTimeout(() => { act1.style.display = 'none' }, 800);
@@ -2447,43 +2500,52 @@
             simStartTime = performance.now();
             simRunning = true;
 
-            const checkEnd = setInterval(() => { if (!simRunning) { clearInterval(checkEnd); clearInterval(msgInterval); } }, 200);
+            const checkEnd = setInterval(() => {
+                if (!simRunning) {
+                    clearInterval(checkEnd);
+                    clearInterval(msgInterval);
+                    setTimeout(() => showAct3(backendData), 1000); // Trigger Act3 when wave matches
+                }
+            }, 200);
         }
 
-        function showAct3() {
+        function showAct3(data) {
             act3.classList.add('show');
             act3.scrollIntoView({ behavior: 'smooth' });
+            // AI Analysis Text
+            document.getElementById('ai-analysis-text').innerHTML = '<p class="ai-para">' + data.analysis + '</p>';
+
             // Animate reaction bar after short delay
             setTimeout(() => {
-                document.getElementById('rxn-liked').style.width = '31%';
-                document.getElementById('rxn-disliked').style.width = '16%';
-                document.getElementById('rxn-shared').style.width = '17%';
-                document.getElementById('rxn-comment').style.width = '6%';
-                document.getElementById('rxn-none').style.width = '30%';
+                document.getElementById('rxn-liked').style.width = data.reactions.liked + '%';
+                document.getElementById('rxn-disliked').style.width = data.reactions.disliked + '%';
+                document.getElementById('rxn-shared').style.width = data.reactions.shared + '%';
+                document.getElementById('rxn-comment').style.width = data.reactions.comment + '%';
+                document.getElementById('rxn-none').style.width = data.reactions.none + '%';
             }, 400);
-            drawBeliefChart();
+            drawBeliefChart(data.charts);
             renderNetworkGraph();
-            countUp('cnt-impressions', 12402, '');
-            countUp('cnt-likes', 3847, '');
-            countUp('cnt-dislikes', 1923, '');
-            countUp('cnt-shares', 2109, '');
-            countUp('cnt-comments', 742, '');
+            countUp('cnt-impressions', data.metrics.impressions, '');
+            countUp('cnt-likes', data.metrics.likes, '');
+            countUp('cnt-dislikes', data.metrics.dislikes, '');
+            countUp('cnt-shares', data.metrics.shares, '');
+            countUp('cnt-comments', data.metrics.comments, '');
         }
 
         // = = = CHARTS (Chart.js) = = =
         let chartLine = null, chartBar = null, chartPie = null;
-        function drawBeliefChart() {
+        function drawBeliefChart(chartData) {
             if (!document.getElementById('chart-line')) return;
 
             if (chartLine) chartLine.destroy();
             if (chartBar) chartBar.destroy();
             if (chartPie) chartPie.destroy();
 
-            // Shared data
+            // Shared data from backend
             const labels = ['T=0s', 'T=5s', 'T=10s', 'Correction', 'T=60s'];
-            const neutral = [60, 55, 45, 50, 45];
-            const skeptic = [25, 28, 30, 28, 32];
-            const polar = [15, 17, 25, 22, 23];
+            const neutral = chartData ? chartData.neutral : [60, 55, 45, 50, 45];
+            const skeptic = chartData ? chartData.skeptic : [25, 28, 30, 28, 32];
+            const polar = chartData ? chartData.polar : [15, 17, 25, 22, 23];
 
             Chart.defaults.color = '#666';
             Chart.defaults.font.family = "'Inter', system-ui, sans-serif";

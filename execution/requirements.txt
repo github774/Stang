@@ -1,0 +1,5 @@
+# Python dependencies for execution scripts
+# Add packages as needed
+
+python-dotenv>=1.0.0
+requests>=2.31.0
